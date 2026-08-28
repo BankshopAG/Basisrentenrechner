@@ -1,0 +1,2383 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Swiss Life Maximo Basisrente — Steuervorteil, Break-even und fondsgebundener Rentenbezug. Rechner der CEB Bankshop AG.">
+<title>Maximo Basisrente — Steuervorteil und Break-even</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap">
+<style>
+/* ============================================================
+   MAXIMO BASISRENTE — Verkaufsseite Basisrente (Rürup)
+   Heller Lesegrund, Swiss-Life-Rot #A11C36 als Hausfarbe,
+   warmes Dunkelgrau #2C2C2C als Trägerfarbe.
+   Eine geradlinige Grotesk durchgehend, alle Farben explizit.
+   ============================================================ */
+
+:root{
+  --paper:#F7F5F4;
+  --paper-2:#FFFFFF;
+  --paper-3:#EEEAE8;
+  --ink:#2C2C2C;
+  --ink-2:#4A4A4A;
+  --ink-3:#6C6C6C;
+  --ink-4:#96908D;
+  --line:#E3DEDB;
+  --line-2:#CEC7C3;
+
+  --red:#A11C36;
+  --red-d:#7E1429;
+  --red-l:#C9425C;
+  --red-soft:#FBEFF1;
+  --red-line:#E3B6BF;
+
+  --green:#2E6B47;
+  --green-l:#4E9A6C;
+  --green-soft:#F0F7F3;
+  --green-line:#CBE3D6;
+  --gold:#9A7B29;
+
+  --f:"IBM Plex Sans",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --f-c:"IBM Plex Sans Condensed","IBM Plex Sans",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+
+  --w:1080px;
+  --pad:clamp(18px,4.5vw,40px);
+  --r:6px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none !important}
+
+html{scroll-behavior:smooth;scroll-padding-top:78px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--f);
+  font-size:17px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img,canvas,svg{max-width:100%;display:block}
+::selection{background:#F6D4DB;color:var(--ink)}
+:focus-visible{outline:2.5px solid var(--red);outline-offset:3px;border-radius:3px}
+
+/* ---------- Typografie ---------- */
+h1,h2,h3{font-family:var(--f);font-weight:600;margin:0;text-wrap:balance;letter-spacing:-.018em;color:var(--ink)}
+h1{font-size:clamp(2.1rem,5vw,3.6rem);line-height:1.08}
+h2{font-size:clamp(1.65rem,3.4vw,2.5rem);line-height:1.14}
+h3{font-size:clamp(1.15rem,1.9vw,1.4rem);line-height:1.3;font-weight:600}
+p{margin:0}
+
+.eyebrow{font-family:var(--f);font-size:.75rem;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--red)}
+.lede{font-size:clamp(1.0625rem,1.5vw,1.1875rem);line-height:1.62;color:var(--ink-2);max-width:60ch}
+.small{font-size:.9375rem;line-height:1.58;color:var(--ink-2)}
+.mini{font-size:.8125rem;line-height:1.55;color:var(--ink-4)}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+.big{font-family:var(--f-c);font-weight:600;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums;font-size:1.5rem}
+
+/* Kennzahlen-Leiste */
+.ticks{display:grid;gap:1px;margin:0;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.16);border-radius:var(--r);overflow:hidden}
+.ticks > div{background:var(--ink);padding:15px 18px;display:flex;flex-direction:column;gap:5px}
+.ticks dt{font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#A9A2A0}
+.ticks dd{margin:0;font-family:var(--f-c);font-weight:600;font-size:1.6rem;line-height:1;
+  letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:#F2A6B4}
+.ticks dd.plain{color:#F2EFEE}
+.ticks dd.pos{color:#8FD1A8}
+.ticks p{margin:0;font-size:.75rem;color:#A9A2A0}
+
+/* ---------- Struktur ---------- */
+.wrap{max-width:var(--w);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
+.band{padding:clamp(56px,7.5vw,96px) 0}
+.band--w{background:var(--paper-2)}
+.band--t{background:var(--paper-3)}
+.band--ink{background:var(--ink);color:#EDEAE9}
+.band--ink h1,.band--ink h2,.band--ink h3{color:#FFFFFF}
+.band--ink .lede,.band--ink .small{color:#C6C0BE}
+.band--ink .eyebrow{color:#EFA9B5}
+
+.stack{display:flex;flex-direction:column}
+.gap-xs{gap:8px}.gap-s{gap:14px}.gap-m{gap:22px}.gap-l{gap:36px}.gap-xl{gap:56px}
+.center{text-align:center;align-items:center}
+.center .lede{margin-left:auto;margin-right:auto}
+
+.grid{display:grid;gap:clamp(14px,1.8vw,20px)}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(238px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(216px,1fr))}
+
+/* ---------- Kopfzeile ---------- */
+header.top{position:sticky;top:0;z-index:60;
+  background:rgba(247,245,244,.93);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;height:66px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);flex:none}
+.brand svg{width:26px;height:26px;flex:none}
+.brand b{font-weight:600;font-size:.9375rem;letter-spacing:-.01em}
+.brand span{font-size:.75rem;color:var(--ink-4);font-weight:500}
+nav.jump{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav.jump::-webkit-scrollbar{display:none}
+nav.jump a{text-decoration:none;color:var(--ink-2);font-size:.875rem;font-weight:500;
+  padding:8px 12px;border-radius:99px;white-space:nowrap;transition:background .15s,color .15s}
+nav.jump a:hover{background:var(--paper-3);color:var(--ink)}
+@media(max-width:1180px){nav.jump{display:none}}
+
+/* ---------- Schaltflächen ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  font-family:var(--f);font-size:1rem;font-weight:600;letter-spacing:-.005em;
+  padding:14px 26px;border-radius:var(--r);border:1.5px solid transparent;cursor:pointer;
+  text-decoration:none;transition:transform .16s ease,box-shadow .16s ease,background .16s ease,border-color .16s ease}
+.btn--red{background:var(--red);color:#FFFFFF;box-shadow:0 6px 18px -8px rgba(161,28,54,.6)}
+.btn--red:hover{background:var(--red-d);transform:translateY(-2px);box-shadow:0 12px 26px -10px rgba(161,28,54,.75)}
+.btn--ink{background:var(--ink);color:#FFFFFF}
+.btn--ink:hover{background:#171717;transform:translateY(-2px)}
+.btn--line{background:transparent;color:var(--ink);border-color:var(--line-2)}
+.btn--line:hover{border-color:var(--ink);transform:translateY(-2px)}
+.btn--sm{font-size:.9375rem;padding:11px 18px}
+.btn-row{display:flex;flex-wrap:wrap;gap:12px}
+
+/* ---------- Karten ---------- */
+.card{background:var(--paper-2);border:1px solid var(--line);border-radius:var(--r);padding:clamp(20px,2.4vw,28px)}
+.card--soft{background:var(--red-soft);border-color:var(--red-line)}
+.card--ink{background:var(--ink);border-color:var(--ink);color:#EDEAE9}
+.card--ink h3{color:#FFF}
+.card--ink .small{color:#C6C0BE}
+
+.feat{display:flex;flex-direction:column;gap:10px}
+.feat .ico{width:34px;height:34px;color:var(--red)}
+.feat p{color:var(--ink-2);font-size:.9375rem;line-height:1.56}
+
+/* ---------- Rechner ---------- */
+.tool{background:var(--paper-2);border:1px solid var(--line);border-radius:10px;overflow:hidden;
+  box-shadow:0 1px 2px rgba(44,44,44,.05),0 18px 40px -32px rgba(44,44,44,.4)}
+.tool-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px clamp(16px,2.2vw,26px);border-bottom:1px solid var(--line);background:var(--paper)}
+.tool-head .label{font-size:.8125rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-4)}
+.tool-body{padding:clamp(18px,2.6vw,30px);display:grid;gap:clamp(20px,2.8vw,32px);grid-template-columns:minmax(0,1fr);align-items:start}
+@media(min-width:900px){
+  .tool-body{grid-template-columns:minmax(0,312px) minmax(0,1fr)}
+  .tool-body > form{position:sticky;top:84px}
+}
+
+fieldset{border:0;margin:0;padding:0}
+legend{padding:0}
+
+.field{display:flex;flex-direction:column;gap:7px}
+.field-label{font-size:.8125rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-4);
+  display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.field-val{font-size:.9375rem;font-weight:600;color:var(--red);letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums}
+
+.inp{display:flex;align-items:center;background:var(--paper-2);border:1.5px solid var(--line-2);border-radius:var(--r);transition:border-color .15s}
+.inp:focus-within{border-color:var(--red)}
+.inp input{flex:1;min-width:0;background:transparent;border:0;color:var(--ink);
+  font-family:var(--f);font-size:1.125rem;font-weight:600;padding:12px 14px;font-variant-numeric:tabular-nums}
+.inp input:focus{outline:none}
+.inp input::-webkit-outer-spin-button,.inp input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.inp input[type=number]{-moz-appearance:textfield}
+.inp .unit{font-size:.875rem;font-weight:500;color:var(--ink-4);padding-right:14px;flex:none}
+
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;background:transparent;margin:0;height:26px;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--line-2);border-radius:4px}
+input[type=range]::-moz-range-track{height:4px;background:var(--line-2);border-radius:4px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-9px;border-radius:50%;
+  background:var(--red);border:1.5px solid var(--red-d);box-shadow:0 1px 4px rgba(44,44,44,.3)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border:1.5px solid var(--red-d);border-radius:50%;
+  background:var(--red);box-shadow:0 1px 4px rgba(44,44,44,.3)}
+
+.seg{display:flex;background:var(--paper-3);border-radius:var(--r);padding:4px;gap:4px}
+.seg button{flex:1;background:transparent;border:0;border-radius:4px;cursor:pointer;padding:10px 8px;
+  font-family:var(--f);font-size:.9375rem;font-weight:600;color:var(--ink-2);transition:background .15s,color .15s}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed=true]{background:var(--paper-2);color:var(--ink);box-shadow:0 1px 3px rgba(44,44,44,.16)}
+
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{background:var(--paper-2);border:1.5px solid var(--line-2);border-radius:99px;color:var(--ink-2);
+  font-family:var(--f);font-size:.8125rem;font-weight:600;padding:7px 13px;cursor:pointer;
+  transition:border-color .15s,color .15s,background .15s}
+.chip:hover{border-color:var(--red);color:var(--red)}
+.chip[aria-pressed=true]{background:var(--red-soft);border-color:var(--red-line);color:var(--red-d)}
+
+.check{display:flex;align-items:flex-start;gap:9px;cursor:pointer;font-size:.875rem;line-height:1.45;color:var(--ink-2)}
+.check input{flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:var(--red);cursor:pointer}
+
+/* Ergebnis */
+.result{background:var(--red);border-radius:8px;padding:clamp(20px,2.6vw,28px);display:flex;flex-direction:column;gap:8px}
+.result dt{font-size:.8125rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#F0BCC6}
+.result dd{margin:0;font-family:var(--f-c);font-weight:600;font-size:clamp(2rem,4.6vw,3rem);line-height:1;
+  letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:#FFFFFF}
+.result .note{font-size:.9375rem;color:#F3D2D9;line-height:1.5}
+.result--split{display:grid;gap:14px clamp(18px,3vw,34px);grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}
+.result--split > div{display:flex;flex-direction:column;gap:8px;min-width:0}
+.result--split dd.sub{font-size:clamp(1.5rem,3vw,2.1rem);color:#F3D2D9}
+@media(max-width:640px){.result--split{grid-template-columns:minmax(0,1fr)}}
+.result--ink{background:var(--ink)}
+.result--ink dt{color:#A9A2A0}
+.result--ink dd{color:#F2A6B4}
+.result--ink .note{color:#C6C0BE}
+
+.stats{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  grid-template-columns:repeat(auto-fit,minmax(138px,1fr))}
+.stat{background:var(--paper-2);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.stat dt{font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-4);line-height:1.35}
+.stat dd{margin:0;font-size:1.125rem;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.stat dd.pos{color:var(--green)}
+.stat dd.acc{color:var(--red)}
+
+.chartbox{background:var(--paper-2);border:1px solid var(--line);border-radius:var(--r);padding:12px 12px 8px;
+  display:flex;flex-direction:column;gap:9px;min-width:0}
+.chartbox canvas{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.75rem;font-weight:500;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:15px;height:3px;border-radius:3px;display:inline-block;flex:none}
+
+/* ---------- Vorteilskarte ---------- */
+.boon{background:var(--green-soft);border:1px solid var(--green-line);border-radius:var(--r);overflow:hidden}
+.boon-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  padding:13px 18px;background:var(--green);color:#FFFFFF}
+.boon-head p{font-size:.8125rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.boon-head span{font-family:var(--f-c);font-weight:600;font-size:1.5rem;line-height:1;
+  letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.vz{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+  padding:13px 18px;border-top:1px solid #DCEBE2}
+.vz:first-child{border-top:0}
+.vz b{font-size:.9375rem;font-weight:600;color:var(--ink);line-height:1.35}
+.vz .mini{color:#5D7A6A}
+.vz-w{font-family:var(--f-c);font-weight:600;font-size:1.375rem;line-height:1.2;
+  letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--green);white-space:nowrap;flex:none}
+@media(max-width:480px){.vz{flex-direction:column;gap:4px}.vz-w{font-size:1.25rem}}
+
+/* ---------- Balkenvergleich ---------- */
+.vs{display:flex;flex-direction:column;gap:16px}
+.vsrow{display:flex;flex-direction:column;gap:7px}
+.vshead{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.vshead b{font-size:.9375rem;font-weight:600}
+.vshead span{font-family:var(--f-c);font-weight:600;font-size:1.375rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+@media(max-width:520px){.vshead{flex-direction:column;align-items:flex-start;gap:1px}}
+.vsbar{height:26px;border-radius:4px;background:var(--paper-3);overflow:hidden}
+.vsbar i{display:block;height:100%;border-radius:4px}
+
+/* ---------- Aufklapper ---------- */
+details.aus{border:1px solid var(--line);border-radius:var(--r);background:var(--paper-2);overflow:hidden}
+details.aus > summary{cursor:pointer;list-style:none;padding:12px 15px;font-size:.8125rem;font-weight:600;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--ink-4);display:flex;align-items:center;gap:9px;
+  transition:color .15s,background .15s}
+details.aus > summary::-webkit-details-marker{display:none}
+details.aus > summary::after{content:"";width:7px;height:7px;flex:none;margin-left:auto;
+  border-right:1.6px solid var(--red);border-bottom:1.6px solid var(--red);
+  transform:rotate(45deg) translate(-2px,-2px);transition:transform .2s}
+details.aus[open] > summary::after{transform:rotate(-135deg) translate(-2px,-2px)}
+details.aus > summary:hover{color:var(--ink);background:var(--paper)}
+details.aus .inhalt{border-top:1px solid var(--line);max-height:430px;overflow:auto}
+details.aus .fuss{padding:10px 15px;border-top:1px solid var(--line);font-size:.8125rem;
+  line-height:1.5;color:var(--ink-4)}
+details.aus table.tab{border:0;font-size:.8125rem;min-width:720px}
+table.tab tfoot td{position:sticky;bottom:0;background:var(--paper-3);font-weight:600;
+  border-top:2px solid var(--ink);border-bottom:0}
+table.tab td.dim{color:var(--ink-4)}
+table.tab td.neg{color:var(--red-d);font-weight:600}
+details.aus table.tab th{padding:9px 10px}
+details.aus table.tab td{padding:9px 10px}
+details.aus table.tab thead th{position:sticky;top:0;background:var(--paper-2);z-index:1}
+table.tab tr.grenze td{border-top:2px solid var(--red-line)}
+
+/* ---------- Vergleichstabelle ---------- */
+.tabwrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--paper-2)}
+table.tab{width:100%;border-collapse:collapse;font-size:.875rem;min-width:460px}
+table.tab th{text-align:right;font-size:.6875rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--ink-4);padding:11px 14px;border-bottom:1.5px solid var(--line-2);white-space:nowrap}
+table.tab th:first-child{text-align:left}
+table.tab td{text-align:right;padding:11px 14px;border-bottom:1px solid var(--line);
+  font-variant-numeric:tabular-nums;color:var(--ink)}
+table.tab td:first-child{text-align:left;font-weight:600}
+table.tab tr:last-child td{border-bottom:0}
+table.tab tr.on td{background:var(--red-soft)}
+table.tab tr.on td:first-child{color:var(--red-d)}
+table.tab td.pos{color:var(--green);font-weight:600}
+
+/* ---------- Zeitstrahl ---------- */
+.timeline{display:grid;gap:1px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.tl{background:var(--paper-2);padding:22px 20px;display:flex;flex-direction:column;gap:6px}
+.tl.on{background:var(--red-soft)}
+.tl-y{font-size:.75rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--red)}
+.tl h3{font-size:1.0625rem}
+.tl p{font-size:.9375rem;color:var(--ink-2);line-height:1.5}
+
+/* ---------- Schritte ---------- */
+.steps{counter-reset:st;display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.step{background:var(--paper-2);padding:20px clamp(18px,2.2vw,26px);display:grid;gap:4px 18px;
+  grid-template-columns:auto minmax(0,1fr);align-items:start}
+.step::before{counter-increment:st;content:counter(st);
+  width:26px;height:26px;border-radius:50%;background:var(--red);color:#FFF;
+  display:grid;place-items:center;font-size:.8125rem;font-weight:600;flex:none}
+.step p{grid-column:2;color:var(--ink-2);font-size:.9375rem}
+
+/* ---------- Fondskarten ---------- */
+.pcard{background:var(--paper-2);border:1px solid var(--line);border-top:3px solid currentColor;
+  border-radius:var(--r);padding:20px 18px;display:flex;flex-direction:column;gap:10px}
+.pcard h3{font-size:1rem;color:var(--ink)}
+.pcard .risk{font-size:.6875rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+.pcard .pa{font-family:var(--f-c);font-weight:600;font-size:1.875rem;line-height:1;font-variant-numeric:tabular-nums;color:inherit}
+.pcard p{font-size:.8125rem;line-height:1.5;color:var(--ink-2)}
+.pcard .isin{font-size:.75rem;color:var(--ink-4);font-variant-numeric:tabular-nums}
+
+/* ---------- Fuß ---------- */
+footer{background:var(--ink);color:#C6C0BE;padding:clamp(44px,6vw,68px) 0 36px}
+footer .cols{display:grid;gap:28px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+footer h3{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:#EFA9B5;font-weight:600}
+footer p,footer li{font-size:.875rem;color:#C6C0BE;line-height:1.58}
+footer ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+.disclaimer{margin-top:32px;padding-top:22px;border-top:1px solid rgba(255,255,255,.14);
+  font-size:.75rem;color:#A9A2A0;line-height:1.62;max-width:96ch}
+
+/* ---------- Hinweise ---------- */
+.hint{font-size:.8125rem;line-height:1.5;color:var(--ink-4)}
+.hint.warn{display:flex;gap:8px;align-items:flex-start;
+  background:var(--red-soft);border:1px solid var(--red-line);border-radius:var(--r);
+  padding:9px 11px;color:var(--red-d);font-weight:500}
+.hint.warn::before{content:"";flex:none;width:7px;height:7px;margin-top:6px;border-radius:50%;background:var(--red)}
+.hint.ok{display:flex;gap:8px;align-items:flex-start;
+  background:var(--green-soft);border:1px solid var(--green-line);border-radius:var(--r);
+  padding:9px 11px;color:#2A5C40;font-weight:500}
+.hint.ok::before{content:"";flex:none;width:7px;height:7px;margin-top:6px;border-radius:50%;background:var(--green)}
+
+/* ---------- Zugangscode ---------- */
+body.locked{overflow:hidden}
+#gate{position:fixed;inset:0;z-index:200;background:var(--ink);
+  display:grid;place-items:center;padding:24px;overflow-y:auto}
+#gate[hidden]{display:none}
+.gate-box{width:100%;max-width:420px;display:flex;flex-direction:column;gap:24px;text-align:center;align-items:center}
+.gate-box .mark{display:flex;align-items:center;gap:10px}
+.gate-box .mark svg{width:30px;height:30px}
+.gate-box .mark b{color:#FFF;font-size:1rem;font-weight:600}
+.gate-box h2{color:#FFF;font-size:1.6rem}
+.gate-box p{color:#C6C0BE;font-size:.9375rem;line-height:1.55}
+.code-row{display:flex;gap:8px;justify-content:center;width:100%}
+.code-row input{width:100%;max-width:52px;aspect-ratio:3/4;min-width:0;
+  background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.24);border-radius:6px;
+  color:#FFF;font-family:var(--f-c);font-weight:600;font-size:1.75rem;text-align:center;
+  font-variant-numeric:tabular-nums;transition:border-color .15s,background .15s;padding:0}
+.code-row input:focus{outline:none;border-color:var(--red-l);background:rgba(255,255,255,.13)}
+.code-row input.filled{border-color:rgba(201,66,92,.7)}
+.gate-msg{min-height:22px;font-size:.875rem;font-weight:500;color:#EFA9B5}
+.gate-msg.ok{color:#8FD1A8}
+#gate.shake .code-row{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@media (prefers-reduced-motion:reduce){#gate.shake .code-row{animation:none}}
+
+/* ---------- Dokumentleiste ---------- */
+.doc{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.doc-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.doc .inp input{font-size:1rem;font-weight:500}
+
+/* ---------- Druckdokument ---------- */
+#print{display:none}
+.pg{page-break-after:always;padding:0 0 8mm}
+.pg:last-child{page-break-after:auto}
+.pg-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+  border-bottom:2px solid #A11C36;padding-bottom:8px;margin-bottom:12px}
+.pg-head b{font-size:12pt;color:#2C2C2C}
+.pg-head span{font-size:8pt;color:#6C6C6C;text-align:right;line-height:1.4}
+.pg h1{font-size:19pt;line-height:1.15;margin:0 0 4px}
+.pg h2{font-size:11pt;margin:11px 0 5px;color:#2C2C2C}
+.pg p{font-size:9pt;line-height:1.5;color:#2C2C2C}
+.pg .lead{font-size:9.5pt;color:#4A4A4A;margin-bottom:10px}
+.pg-hero{background:#A11C36;color:#FFF;border-radius:4px;padding:12px 16px;margin:9px 0 10px;
+  display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:10px}
+.pg-hero .lbl{font-size:8pt;letter-spacing:.08em;text-transform:uppercase;color:#F0BCC6}
+.pg-hero .val{font-size:24pt;font-weight:600;letter-spacing:-.02em;color:#FFFFFF;line-height:1}
+.pg-hero .sub{font-size:8.5pt;color:#F3D2D9;width:100%}
+.pg-kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;margin:8px 0}
+.pg-kv div{display:flex;justify-content:space-between;gap:10px;font-size:8.5pt;
+  padding:3px 0;border-bottom:1px solid #E3DEDB}
+.pg-kv b{font-weight:600;white-space:nowrap}
+table.pg-t{width:100%;border-collapse:collapse;font-size:8.5pt;margin:6px 0}
+table.pg-t th{text-align:right;font-weight:600;color:#4A4A4A;border-bottom:1.5px solid #A11C36;padding:4px 5px}
+table.pg-t th:first-child{text-align:left}
+table.pg-t td{text-align:right;padding:3px 5px;border-bottom:1px solid #EEEAE8;font-variant-numeric:tabular-nums}
+table.pg-t td:first-child{text-align:left}
+table.pg-t tr.hi td{font-weight:600;background:#F6E7EA}
+.pg-img{width:100%;height:52mm;object-fit:contain;border:1px solid #E3DEDB;border-radius:4px;margin:6px 0;background:#FFF}
+.pg-boon{border:1px solid #CBE3D6;border-radius:4px;overflow:hidden;margin:8px 0}
+.pg-boon .hd{background:#2E6B47;color:#FFF;padding:6px 12px;display:flex;
+  justify-content:space-between;font-size:9pt;font-weight:600}
+.pg-boon .rw{padding:6px 12px;border-top:1px solid #DCEBE2;display:flex;
+  justify-content:space-between;gap:12px;font-size:8.5pt;background:#F0F7F3}
+.pg-boon .rw b{color:#2E6B47;white-space:nowrap}
+.pg-legal{font-size:7pt;line-height:1.45;color:#4A4A4A;margin-top:10px;
+  border-top:1px solid #E3DEDB;padding-top:8px;text-align:justify}
+.pg-legal b{color:#2C2C2C}
+.pg-foot{margin-top:10px;padding-top:6px;border-top:1px solid #E3DEDB;
+  font-size:7.5pt;color:#96908D;display:flex;justify-content:space-between;gap:12px}
+
+@media print{
+  @page{size:A4 portrait;margin:14mm 13mm}
+  html,body{background:#FFF !important}
+  body{font-size:10pt}
+  body > *{display:none !important}
+  #print{display:block !important}
+  body.locked{overflow:visible}
+  .pg-hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pg-boon .hd,.pg-boon .rw,table.pg-t tr.hi td{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+/* ---------- Einblendung ---------- */
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s cubic-bezier(.2,.7,.3,1),transform .6s cubic-bezier(.2,.7,.3,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
+  .rv{opacity:1;transform:none}
+}
+
+@media(max-width:640px){
+  body{font-size:16px}
+  .step{grid-template-columns:minmax(0,1fr)}
+  .step p{grid-column:1}
+}
+</style>
+</head>
+<body>
+<!-- ══════════════════ ZUGANGSCODE ══════════════════ -->
+<div id="gate" hidden>
+  <div class="gate-box">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="4" y="4" width="24" height="24" rx="3" fill="#A11C36"/>
+        <path d="M10 22V13M16 22V10M22 22v-6" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <b>Maximo Basisrente</b>
+    </div>
+    <div class="stack gap-s" style="align-items:center">
+      <h2>Ihr Zugangscode</h2>
+      <p>Bitte geben Sie den sechsstelligen Code ein, den Sie von Ihrem Berater erhalten haben.</p>
+    </div>
+    <div class="code-row" id="codeRow" role="group" aria-label="Sechsstelliger Zugangscode">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="Ziffer 1">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="Ziffer 2">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="Ziffer 3">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="Ziffer 4">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="Ziffer 5">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="Ziffer 6">
+    </div>
+    <p class="gate-msg" id="gateMsg" role="status" aria-live="polite"></p>
+    <button class="btn btn--red" type="button" id="gateGo" style="width:100%">Berechnung öffnen</button>
+  </div>
+</div>
+
+<script>
+/* Zugangscode — einfache Zugangshürde, kein Sicherheitsmerkmal.
+   Der Code steht nicht im Klartext in der Datei, ist aber clientseitig
+   geprüft und damit für technisch versierte Besucher umgehbar.        */
+(function () {
+  'use strict';
+  var SALT = 'sl-basisrente-2026:', TARGET = 4053970455, KEY = 'slb-zugang';
+  var gate = document.getElementById('gate');
+  var row = document.getElementById('codeRow');
+  var boxes = [].slice.call(row.querySelectorAll('input'));
+  var msg = document.getElementById('gateMsg');
+  var go = document.getElementById('gateGo');
+
+  function hash(s) {
+    var h = 0x811c9dc5;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+    return h >>> 0;
+  }
+  function stored(v) {
+    try { return v === undefined ? localStorage.getItem(KEY) : localStorage.setItem(KEY, v); }
+    catch (e) { return null; }
+  }
+  if (stored() === String(TARGET)) return;
+
+  gate.hidden = false;
+  document.body.classList.add('locked');
+  setTimeout(function () { boxes[0].focus(); }, 60);
+
+  function value() { return boxes.map(function (b) { return b.value; }).join(''); }
+
+  function open() {
+    stored(String(TARGET));
+    msg.textContent = 'Zugang bestätigt.';
+    msg.className = 'gate-msg ok';
+    gate.style.transition = 'opacity .35s ease';
+    gate.style.opacity = '0';
+    setTimeout(function () {
+      gate.hidden = true;
+      document.body.classList.remove('locked');
+      window.dispatchEvent(new Event('resize'));
+    }, 340);
+  }
+  function deny() {
+    msg.textContent = 'Dieser Code stimmt nicht. Bitte erneut versuchen.';
+    msg.className = 'gate-msg';
+    gate.classList.add('shake');
+    setTimeout(function () { gate.classList.remove('shake'); }, 420);
+    boxes.forEach(function (b) { b.value = ''; b.classList.remove('filled'); });
+    boxes[0].focus();
+  }
+  function check() {
+    var v = value();
+    if (v.length < 6) { msg.textContent = 'Bitte alle sechs Ziffern eingeben.'; msg.className = 'gate-msg'; return; }
+    if (hash(SALT + v) === TARGET) open(); else deny();
+  }
+
+  boxes.forEach(function (b, i) {
+    b.addEventListener('input', function () {
+      b.value = b.value.replace(/\D/g, '').slice(0, 1);
+      b.classList.toggle('filled', !!b.value);
+      msg.textContent = '';
+      if (b.value && i < boxes.length - 1) boxes[i + 1].focus();
+      if (value().length === 6) check();
+    });
+    b.addEventListener('keydown', function (e) {
+      if (e.key === 'Backspace' && !b.value && i > 0) { boxes[i - 1].focus(); boxes[i - 1].value = ''; boxes[i - 1].classList.remove('filled'); e.preventDefault(); }
+      else if (e.key === 'ArrowLeft' && i > 0) { boxes[i - 1].focus(); e.preventDefault(); }
+      else if (e.key === 'ArrowRight' && i < boxes.length - 1) { boxes[i + 1].focus(); e.preventDefault(); }
+      else if (e.key === 'Enter') { check(); e.preventDefault(); }
+    });
+    b.addEventListener('focus', function () { b.select(); });
+    b.addEventListener('paste', function (e) {
+      var t = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+      if (!t) return;
+      e.preventDefault();
+      boxes.forEach(function (x, k) { x.value = t[k] || ''; x.classList.toggle('filled', !!x.value); });
+      boxes[Math.min(t.length, 5)].focus();
+      if (t.length === 6) check();
+    });
+  });
+  go.addEventListener('click', check);
+})();
+</script>
+
+<!-- ══════════════════ KOPFZEILE ══════════════════ -->
+<header class="top">
+  <div class="wrap topbar">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="4" y="4" width="24" height="24" rx="3" fill="#A11C36"/>
+        <path d="M10 22V13M16 22V10M22 22v-6" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="stack"><b>Maximo Basisrente</b><span>Vorsorge mit dem Finanzamt als Mitsparer</span></span>
+    </a>
+    <nav class="jump" aria-label="Abschnitte">
+      <a href="#warum">Warum</a>
+      <a href="#steuer">Steuervorteil</a>
+      <a href="#breakeven">Break-even</a>
+      <a href="#rentenbezug">Rentenbezug</a>
+      <a href="#anlage">Anlage</a>
+    </nav>
+    <a class="btn btn--red btn--sm" href="https://evapro.swisslife.de/pos/pos" target="_blank" rel="noopener">Zum Antrag</a>
+  </div>
+</header>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<section class="band band--ink" id="top" style="padding-top:clamp(56px,8vw,88px)">
+  <div class="wrap stack gap-l">
+    <div class="stack gap-m">
+      <p class="eyebrow">Swiss Life Maximo · Basisrente</p>
+      <h1>Der Staat spart mit.<br>Jedes Jahr aufs Neue.</h1>
+    </div>
+    <p class="lede" style="max-width:54ch">Jeder Euro in die Basisrente ist voll absetzbar. Bei
+      einem Spitzensteuersatz kostet Sie ein Beitrag von 500 € im Monat nach der Erstattung
+      nur rund 280 €. Die Frage ist nur: Wann haben Sie das, was Sie netto eingezahlt haben,
+      als Rente wieder in der Tasche? Rechnen Sie es hier aus.</p>
+
+    <div class="btn-row">
+      <a class="btn btn--red" href="#steuer">Steuervorteil rechnen</a>
+      <a class="btn btn--line" href="#breakeven" style="color:#FFF;border-color:rgba(255,255,255,.34)">Break-even ansehen</a>
+    </div>
+
+    <dl class="ticks">
+      <div><dt>Beiträge absetzbar</dt><dd class="pos">100 %</dd><p>seit 2023, ohne Kürzung</p></div>
+      <div><dt>Höchstbetrag 2026</dt><dd class="plain">30.826 €</dd><p>61.652 € bei Zusammenveranlagung</p></div>
+      <div><dt>Rentenbeginn 2026</dt><dd class="plain">84 %</dd><p>steuerpflichtiger Anteil der Rente</p></div>
+      <div><dt>Auch in der Rente</dt><dd>investiert</dd><p>fondsgebundener Rentenbezug</p></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ══════════════════ WARUM ══════════════════ -->
+<section class="band band--w" id="warum">
+  <div class="wrap stack gap-l">
+
+    <div class="stack gap-s rv" style="max-width:62ch">
+      <p class="eyebrow">Warum überhaupt Basisrente</p>
+      <h2>Ein Vertrag, der etwas verlangt<br>— und dafür etwas zurückgibt.</h2>
+      <p class="lede">Die Basisrente ist verbindlich: Das Kapital wird nicht auf einen Schlag
+        ausgezahlt, sondern lebenslang verrentet. Genau dafür beteiligt sich das Finanzamt
+        an jedem einzelnen Beitrag. Wer das nüchtern durchrechnet, sieht schnell, warum sich
+        die Bindung lohnt.</p>
+    </div>
+
+    <div class="grid g3 rv">
+      <div class="card feat">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M12 3v18M7 7h7a3 3 0 0 1 0 6H7m0 0h7a3 3 0 0 1 0 6H7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>Das Finanzamt zahlt mit</h3>
+        <p>Beiträge zur Basisrente mindern Ihr zu versteuerndes Einkommen — voll, bis zum
+          Höchstbetrag von 30.826 € im Jahr. Je höher Ihr Steuersatz, desto größer Ihr Anteil,
+          den Sie gar nicht selbst tragen.</p>
+      </div>
+      <div class="card feat">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M3 17l5-6 4 3.5L21 5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15 5h6v6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>Investiert bleiben — auch in der Rente</h3>
+        <p>Bei Swiss Life Maximo endet die Anlage nicht am Rentenbeginn. Ihr Guthaben bleibt
+          investiert und Ihre Rente wächst weiter. Genau das trennt Maximo von Verträgen,
+          die 25 Jahre Rentenbezug in festverzinsten Papieren parken.</p>
+      </div>
+      <div class="card feat">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M12 3l8 3v6c0 4.4-3.2 7.9-8 9-4.8-1.1-8-4.6-8-9V6l8-3z" stroke-linejoin="round"/>
+          <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>Geschützt und lebenslang</h3>
+        <p>In der Ansparphase ist das Guthaben nicht pfändbar. Danach fließt die Rente
+          lebenslang — auch dann noch, wenn das Kapital rechnerisch längst verbraucht wäre.</p>
+      </div>
+    </div>
+
+    <div class="timeline rv" role="list">
+      <div class="tl on" role="listitem"><p class="tl-y">Jedes Jahr</p><h3>Sie zahlen ein</h3>
+        <p>Der Beitrag geht in Ihren Vertrag und in die Anlage Ihrer Wahl.</p></div>
+      <div class="tl on" role="listitem"><p class="tl-y">Jedes Jahr</p><h3>Sie bekommen zurück</h3>
+        <p>Mit der Steuererklärung erstattet das Finanzamt einen Teil — Jahr für Jahr.</p></div>
+      <div class="tl" role="listitem"><p class="tl-y">Ab Rentenbeginn</p><h3>Sie bekommen Rente</h3>
+        <p>Lebenslang, monatlich, versteuert mit dem festgelegten Besteuerungsanteil.</p></div>
+      <div class="tl" role="listitem"><p class="tl-y">Der Punkt, auf den es ankommt</p><h3>Ihr Break-even-Alter</h3>
+        <p>Ab diesem Geburtstag haben Sie netto mehr herausbekommen, als Sie netto eingezahlt haben.</p></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════ STEUERVORTEIL ══════════════════ -->
+<section class="band" id="steuer">
+  <div class="wrap stack gap-l">
+
+    <div class="stack gap-s rv" style="max-width:62ch">
+      <p class="eyebrow">Ihr Steuervorteil</p>
+      <h2>Was Sie einzahlen —<br>und was es Sie wirklich kostet.</h2>
+      <p class="lede">Der Rechner ermittelt Ihre Erstattung nicht über einen geschätzten Steuersatz,
+        sondern über den echten Einkommensteuertarif 2026 samt Solidaritätszuschlag und
+        Kirchensteuer. Alles, was Sie hier eingeben, gilt auch für die beiden folgenden Abschnitte.</p>
+    </div>
+
+    <div class="tool rv">
+      <div class="tool-head">
+        <p class="label">Basisrentenrechner</p>
+        <p class="label" id="stGrenz" style="color:var(--red)">—</p>
+      </div>
+      <div class="tool-body">
+
+        <form class="stack gap-m" id="frm" onsubmit="return false">
+
+          <div class="field">
+            <span class="field-label">Monatlicher Beitrag</span>
+            <div class="inp"><input type="number" id="fBeitrag" value="500" min="0" step="25" inputmode="numeric"><span class="unit">€ / Monat</span></div>
+            <p class="hint" id="fBeitragHint">Laufender Beitrag ab 300 € im Jahr, also 25 € im Monat.</p>
+          </div>
+
+          <div class="field">
+            <span class="field-label">Ihr Alter heute <span class="field-val" id="fAlterVal">40 Jahre</span></span>
+            <input type="range" id="fAlter" min="18" max="64" step="1" value="40" aria-label="Alter heute">
+          </div>
+
+          <div class="field">
+            <span class="field-label">Rentenbeginn mit <span class="field-val" id="fRbVal">67 Jahren</span></span>
+            <input type="range" id="fRb" min="62" max="70" step="1" value="67" aria-label="Rentenbeginnalter">
+            <p class="hint" id="fLaufzeit">—</p>
+          </div>
+
+          <fieldset class="stack gap-s">
+            <legend class="field-label" style="margin-bottom:4px">Kostenfreie Dynamik</legend>
+            <div class="chips" role="group" aria-label="Jährliche Beitragserhöhung">
+              <button type="button" class="chip" data-dyn="0" aria-pressed="true">ohne</button>
+              <button type="button" class="chip" data-dyn="2">2 %</button>
+              <button type="button" class="chip" data-dyn="3">3 %</button>
+              <button type="button" class="chip" data-dyn="5">5 % im Jahr</button>
+            </div>
+            <p class="mini">Die Dynamik hält Ihren Beitrag real auf Höhe — sonst schrumpft er über
+              die Jahre, und mit ihm die spätere Rente.</p>
+          </fieldset>
+
+          <fieldset class="stack gap-s">
+            <legend class="field-label" style="margin-bottom:4px">Ihre steuerliche Situation</legend>
+            <div class="seg" role="group" aria-label="Berufsstatus">
+              <button type="button" data-status="selb" aria-pressed="true">Selbständig</button>
+              <button type="button" data-status="ang">Angestellt</button>
+            </div>
+            <p class="mini" id="fStatusHint">Ohne gesetzliche Rentenversicherung steht Ihnen der
+              Höchstbetrag in voller Höhe zur Verfügung.</p>
+          </fieldset>
+
+          <div class="field">
+            <span class="field-label">Zu versteuerndes Einkommen</span>
+            <div class="inp"><input type="number" id="fZve" value="80000" min="0" step="1000" inputmode="numeric"><span class="unit">€ / Jahr</span></div>
+            <p class="hint">Nach Abzug aller Betriebsausgaben, Werbungskosten und übrigen Sonderausgaben.</p>
+          </div>
+
+          <div class="field" id="fBruttoWrap" hidden>
+            <span class="field-label">Bruttojahreslohn</span>
+            <div class="inp"><input type="number" id="fBrutto" value="90000" min="0" step="1000" inputmode="numeric"><span class="unit">€ / Jahr</span></div>
+            <p class="hint">Wird gebraucht, um Ihre Beiträge zur gesetzlichen Rentenversicherung
+              auf den Höchstbetrag anzurechnen.</p>
+          </div>
+
+          <label class="check"><input type="checkbox" id="fSplit">
+            <span>Zusammenveranlagung — verheiratet oder verpartnert. Höchstbetrag und Tarif verdoppeln sich.</span></label>
+
+          <fieldset class="stack gap-s">
+            <legend class="field-label" style="margin-bottom:4px">Kirchensteuer</legend>
+            <div class="chips" role="group" aria-label="Kirchensteuersatz">
+              <button type="button" class="chip" data-kist="0">keine</button>
+              <button type="button" class="chip" data-kist="9" aria-pressed="true">9 %</button>
+              <button type="button" class="chip" data-kist="8">8 %</button>
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <span class="field-label">Wertentwicklung p. a. <span class="field-val" id="fRendVal">6,0 %</span></span>
+            <input type="range" id="fRend" min="0" max="10" step="0.1" value="6" aria-label="Angenommene Wertentwicklung pro Jahr">
+            <div class="chips" role="group" aria-label="Renditeannahmen" style="margin-top:4px">
+              <button type="button" class="chip" data-rend="3">3 %</button>
+              <button type="button" class="chip" data-rend="5">5 %</button>
+              <button type="button" class="chip" data-rend="6" aria-pressed="true">6 %</button>
+              <button type="button" class="chip" data-rend="8">8 %</button>
+            </div>
+            <p class="mini">Angenommene Wertentwicklung der Fonds vor den Kosten des Vertrags.
+              Eine Rechengröße, die Sie selbst wählen — keine Prognose.</p>
+          </div>
+
+        </form>
+
+        <div class="stack gap-m" style="min-width:0">
+
+          <dl class="result">
+            <dt>Ihr Beitrag kostet Sie netto nur</dt>
+            <dd id="stNetto">—</dd>
+            <p class="note" id="stNettoNote">—</p>
+          </dl>
+
+          <dl class="stats">
+            <div class="stat"><dt>Grenzsteuersatz</dt><dd class="acc" id="stGrenzSatz">—</dd></div>
+            <div class="stat"><dt>Erstattung im ersten Jahr</dt><dd class="pos" id="stJahr1">—</dd></div>
+            <div class="stat"><dt>Erstattung über die Laufzeit</dt><dd class="pos" id="stGesamt">—</dd></div>
+            <div class="stat"><dt>Kapital bei Rentenbeginn</dt><dd id="stKapital">—</dd></div>
+          </dl>
+
+          <p class="hint warn" id="stWarn" hidden>—</p>
+
+          <div class="chartbox">
+            <canvas id="chartAnspar" height="320" aria-label="Beiträge, Netto-Aufwand nach Steuererstattung und Vertragsguthaben über die Ansparphase"></canvas>
+            <div class="legend">
+              <span><i style="background:#A11C36"></i>Vertragsguthaben</span>
+              <span><i style="background:#96908D"></i>Beiträge brutto</span>
+              <span><i style="background:#2E6B47"></i>Netto-Aufwand nach Erstattung</span>
+              <span style="color:var(--green);font-weight:600">Grüne Fläche = Steuervorteil <span id="legVorteil">—</span></span>
+            </div>
+          </div>
+
+          <div class="boon">
+            <div class="boon-head">
+              <p>Was das Finanzamt beisteuert</p>
+              <span id="stBoonSum">—</span>
+            </div>
+            <div id="stBoon"></div>
+          </div>
+
+          <p class="mini" id="stFoot">—</p>
+        </div>
+      </div>
+    </div>
+
+    <details class="aus rv">
+      <summary>Ansparphase Jahr für Jahr nachrechnen</summary>
+      <div class="inhalt"><table class="tab" id="tabAnspar"></table></div>
+      <p class="fuss" id="tabAnsparFuss">—</p>
+    </details>
+
+    <p class="mini rv" style="max-width:80ch">Unverbindliche Modellrechnung, keine steuerliche Beratung
+      und keine Zusage. Gerechnet mit dem Einkommensteuertarif 2026, unverändert über die gesamte
+      Laufzeit; Ihr tatsächlicher Vorteil hängt von Ihrer Steuererklärung im jeweiligen Jahr ab.</p>
+
+  </div>
+</section>
+
+<!-- ══════════════════ BREAK-EVEN ══════════════════ -->
+<section class="band band--w" id="breakeven">
+  <div class="wrap stack gap-l">
+
+    <div class="stack gap-s rv" style="max-width:62ch">
+      <p class="eyebrow">Der entscheidende Punkt</p>
+      <h2>In welchem Alter<br>haben Sie alles zurück?</h2>
+      <p class="lede">Sie binden sich — dafür wollen Sie wissen, wann sich das gerechnet hat.
+        Nicht als abstrakte Dauer, sondern als Lebensalter: Wenn Sie mit 67 in Rente gehen — ab
+        welchem Geburtstag ist alles wieder drin? Verglichen wird ehrlich — was Sie
+        nach Steuererstattung netto eingezahlt haben, gegen das, was nach Steuern netto bei
+        Ihnen ankommt.</p>
+    </div>
+
+    <div class="tool rv">
+      <div class="tool-head">
+        <p class="label">Break-even netto gegen netto</p>
+        <p class="label" id="beJahrLbl" style="color:var(--red)">—</p>
+      </div>
+      <div class="tool-body">
+
+        <form class="stack gap-m" id="frm2" onsubmit="return false">
+
+          <div class="field">
+            <span class="field-label">Übrige Einkünfte im Alter</span>
+            <div class="inp"><input type="number" id="bSonst" value="24000" min="0" step="1000" inputmode="numeric"><span class="unit">€ / Jahr</span></div>
+            <div class="chips" role="group" aria-label="Anteil des heutigen Einkommens">
+              <button type="button" class="chip" data-quote="30">30 % vom Einkommen</button>
+              <button type="button" class="chip" data-quote="45">45 %</button>
+              <button type="button" class="chip" data-quote="60">60 %</button>
+            </div>
+            <p class="hint" id="bSonstHint">Zu versteuernder Teil Ihrer gesetzlichen Rente und aller
+              übrigen Einkünfte, in heutigem Geld. Er bestimmt, mit welchem Satz die Basisrente
+              besteuert wird — und im Alter ist er meist deutlich niedriger als heute.</p>
+          </div>
+
+          <div class="field">
+            <span class="field-label">Jährliche Tarifanpassung <span class="field-val" id="bTarifVal">2,0 %</span></span>
+            <input type="range" id="bTarif" min="0" max="3" step="0.1" value="2" aria-label="Jährliche Anpassung von Grundfreibetrag und Steuertarif">
+            <p class="hint" id="bTarifHint">Grundfreibetrag, Tarifeckwerte und Höchstbetrag werden jedes
+              Jahr angehoben. Mit 0 % rechnen Sie mit dem eingefrorenen Tarif von heute — das
+              unterschätzt Ihre spätere Nettorente deutlich.</p>
+          </div>
+
+          <div class="field">
+            <span class="field-label">Wertentwicklung im Rentenbezug <span class="field-val" id="bRendVal">5,0 %</span></span>
+            <input type="range" id="bRend" min="0" max="8" step="0.1" value="5" aria-label="Wertentwicklung während des Rentenbezugs">
+            <p class="mini">Gilt nur für den fondsgebundenen Rentenbezug. Bei 0 % verläuft er
+              wie die klassische Verrentung.</p>
+          </div>
+
+          <label class="check"><input type="checkbox" id="bKv">
+            <span>Freiwillig gesetzlich krankenversichert — dann fallen rund 21,1 % Kranken- und
+              Pflegeversicherung auf die Rente an. Pflichtversicherte Rentner zahlen darauf nichts.</span></label>
+
+          <div class="hint ok" id="bBaHint">—</div>
+
+        </form>
+
+        <div class="stack gap-m" style="min-width:0">
+
+          <dl class="result result--split">
+            <div>
+              <dt>Ihre Rente ab <span id="beRbAlter">67</span> — netto im Monat</dt>
+              <dd id="beRenteNetto">—</dd>
+              <p class="note" id="beRenteNote">—</p>
+            </div>
+            <div>
+              <dt>brutto im Monat</dt>
+              <dd class="sub" id="beRenteBrutto">—</dd>
+              <p class="note" id="beRenteNote2">—</p>
+            </div>
+          </dl>
+
+          <dl class="result result--ink">
+            <dt>Alles zurück im Alter von</dt>
+            <dd id="beHero">—</dd>
+            <p class="note" id="beHeroNote">—</p>
+          </dl>
+
+          <dl class="stats">
+            <div class="stat"><dt>Dauer bis dahin</dt><dd class="acc" id="beDauer">—</dd></div>
+            <div class="stat"><dt>Netto eingezahlt</dt><dd id="beNettoEin">—</dd></div>
+            <div class="stat"><dt>Steuer auf die Rente</dt><dd id="beSteuerSatz">—</dd></div>
+            <div class="stat"><dt>Steuerfrei lebenslang</dt><dd class="pos" id="beFrei">—</dd></div>
+          </dl>
+
+          <div class="chartbox">
+            <canvas id="chartBreak" height="320" aria-label="Kumulierte Nettorente im Vergleich zu den netto eingezahlten Beiträgen"></canvas>
+            <div class="legend">
+              <span><i style="background:#2E6B47"></i>Netto eingezahlt</span>
+              <span><i style="background:#A11C36"></i>Nettorente kumuliert, fondsgebunden</span>
+              <span><i style="background:#96908D"></i>Nettorente kumuliert, klassisch</span>
+            </div>
+          </div>
+
+          <p class="mini" id="beFoot">—</p>
+
+          <div class="doc">
+            <div class="doc-grid">
+              <div class="field">
+                <span class="field-label">Für</span>
+                <div class="inp"><input type="text" id="docName" placeholder="Name der Kundin oder des Kunden" autocomplete="off"></div>
+              </div>
+              <div class="field">
+                <span class="field-label">Ansprechpartner</span>
+                <div class="inp"><input type="text" id="docBerater" placeholder="Ihr Name" autocomplete="off"></div>
+              </div>
+            </div>
+            <div class="btn-row">
+              <button class="btn btn--ink btn--sm" type="button" id="pdfGo">Berechnung als PDF</button>
+              <button class="btn btn--line btn--sm" type="button" id="linkGo">Berechnung als Link sichern</button>
+            </div>
+            <p class="mini" id="linkMsg">Das PDF entsteht über den Druckdialog Ihres Browsers — dort
+              „Als PDF sichern“ wählen. Der Link speichert alle Eingaben und öffnet den Rechner
+              genau so wieder.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <details class="aus rv">
+      <summary>Ihre Rente Jahr für Jahr nachrechnen</summary>
+      <div class="inhalt"><table class="tab" id="tabRente"></table></div>
+      <p class="fuss" id="tabRenteFuss">—</p>
+    </details>
+
+    <details class="aus rv">
+      <summary>Grundfreibetrag und Höchstbetrag Jahr für Jahr</summary>
+      <div class="inhalt"><table class="tab" id="tabTarif"></table></div>
+      <p class="fuss" id="tabTarifFuss">—</p>
+    </details>
+
+  </div>
+</section>
+
+<!-- ══════════════════ FONDSGEBUNDENER RENTENBEZUG ══════════════════ -->
+<section class="band band--t" id="rentenbezug">
+  <div class="wrap stack gap-l">
+
+    <div class="stack gap-s rv" style="max-width:64ch">
+      <p class="eyebrow">Der Unterschied, den kaum ein Anbieter macht</p>
+      <h2>25 Jahre Rente.<br>25 Jahre weiter investiert.</h2>
+      <p class="lede">Bei fast allen Policen am deutschen Markt endet die Anlage am Rentenbeginn:
+        Das Guthaben wandert ins Sicherungsvermögen, und ab da arbeitet es kaum noch — während die
+        Inflation zwei Jahrzehnte lang weiterläuft. Swiss Life Maximo bietet stattdessen den
+        fondsgebundenen Rentenbezug: Ihr Kapital bleibt investiert, und was es darüber hinaus
+        erwirtschaftet, erhöht Ihre Rente.</p>
+    </div>
+
+    <div class="grid g2 rv">
+      <div class="card">
+        <div class="stack gap-s">
+          <p class="eyebrow" style="color:var(--ink-4)">Der Marktstandard</p>
+          <h3>Klassischer Rentenbezug</h3>
+          <p class="small">Das Guthaben wird zu Rentenbeginn ins Sicherungsvermögen umgeschichtet.
+            Die Rente steht fest und bleibt es — nominal. Nach 20 Jahren mit 2 % Inflation hat
+            dieselbe Rente noch rund zwei Drittel ihrer Kaufkraft.</p>
+        </div>
+      </div>
+      <div class="card card--soft">
+        <div class="stack gap-s">
+          <p class="eyebrow">Swiss Life Maximo</p>
+          <h3>Fondsgebundener Rentenbezug</h3>
+          <p class="small">Ihr Kapital bleibt in den Fonds. Die Startrente ist dieselbe — aber alles,
+            was die Anlage über den rechnungsmäßigen Zins hinaus erwirtschaftet, erhöht Ihre Rente
+            dauerhaft. Die Rente wächst mit, statt still zu stehen.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool rv">
+      <div class="tool-head">
+        <p class="label">Was das über die Rentenzeit ausmacht</p>
+        <p class="label" id="rbDauerLbl" style="color:var(--red)">—</p>
+      </div>
+      <div class="tool-body" style="grid-template-columns:minmax(0,1fr)">
+        <div class="stack gap-m" style="min-width:0">
+
+          <dl class="result result--ink">
+            <dt id="rbHeroDt">Mehr Rente über die Rentenzeit, vor Steuern</dt>
+            <dd id="rbHero">—</dd>
+            <p class="note" id="rbHeroNote">—</p>
+          </dl>
+
+          <div class="vs">
+            <div class="vsrow">
+              <div class="vshead"><b>Fondsgebundener Rentenbezug — Summe aller Renten</b><span id="rbSumF" style="color:var(--red)">—</span></div>
+              <div class="vsbar"><i id="rbBarF" style="background:#A11C36;width:100%"></i></div>
+              <p class="mini" id="rbTxtF">—</p>
+            </div>
+            <div class="vsrow">
+              <div class="vshead"><b>Klassische Verrentung — Summe aller Renten</b><span id="rbSumK" style="color:var(--ink-3)">—</span></div>
+              <div class="vsbar"><i id="rbBarK" style="background:#96908D;width:70%"></i></div>
+              <p class="mini" id="rbTxtK">—</p>
+            </div>
+          </div>
+
+          <div class="chartbox">
+            <canvas id="chartRente" height="300" aria-label="Monatliche Rente im Zeitverlauf, fondsgebunden im Vergleich zur klassischen Verrentung"></canvas>
+            <div class="legend">
+              <span><i style="background:#A11C36"></i>Monatsrente fondsgebunden</span>
+              <span><i style="background:#96908D"></i>Monatsrente klassisch</span>
+              <span><i style="background:#9A7B29"></i>Kaufkraft der klassischen Rente</span>
+            </div>
+          </div>
+
+          <p class="mini" id="rbFoot">—</p>
+        </div>
+      </div>
+    </div>
+
+    <details class="aus rv">
+      <summary>Die Schere Jahr für Jahr nachrechnen</summary>
+      <div class="inhalt"><table class="tab" id="tabSchere"></table></div>
+      <p class="fuss" id="tabSchereFuss">—</p>
+    </details>
+
+  </div>
+</section>
+
+<!-- ══════════════════ ANLAGE ══════════════════ -->
+<section class="band band--w" id="anlage">
+  <div class="wrap stack gap-l">
+
+    <div class="stack gap-s rv" style="max-width:62ch">
+      <p class="eyebrow">Das zentrale Investment</p>
+      <h2>Über 200 Fonds.<br>Zwölf fertige Strategien.</h2>
+      <p class="lede">Sie legen zu Vertragsbeginn fest, wie viel Kapital zu Rentenbeginn garantiert
+        bereitstehen soll — zwischen 0 und 80 % der Beitragssumme. Der Rest arbeitet in der Anlage
+        Ihrer Wahl. Switch und Shift sind jederzeit kostenlos.</p>
+    </div>
+
+    <div class="grid g3 rv">
+      <div class="pcard" style="color:#4C7FA6">
+        <p class="risk">Sicherheitsorientiert</p>
+        <h3>Strategie Income+</h3>
+        <p class="pa">4,72 % p. a.</p>
+        <p>SLF (LUX) Multi Asset Moderate, aktiv gemanagt von Swiss Life Asset Managers.</p>
+        <p class="isin">ISIN LU1749126378 · 30 % Aktien</p>
+      </div>
+      <div class="pcard" style="color:#2E6B47">
+        <p class="risk">Ausgewogen</p>
+        <h3>Strategie Balance+</h3>
+        <p class="pa">5,71 % p. a.</p>
+        <p>SLF (LUX) Multi Asset Balanced — die Mitte zwischen Sicherheit und Chance.</p>
+        <p class="isin">ISIN LU1749126451 · 50 % Aktien</p>
+      </div>
+      <div class="pcard" style="color:#9A7B29">
+        <p class="risk">Chancenorientiert</p>
+        <h3>Strategie Dynamic+</h3>
+        <p class="pa">7,62 % p. a.</p>
+        <p>SLF (LUX) Multi Asset Growth mit deutlich höherem Aktienanteil.</p>
+        <p class="isin">ISIN LU1749126535 · 70 % Aktien</p>
+      </div>
+      <div class="pcard" style="color:#A11C36">
+        <p class="risk">Renditeorientiert</p>
+        <h3>iShares Core MSCI World</h3>
+        <p class="pa">11,10 % p. a.</p>
+        <p>Der Welt-ETF von BlackRock, seit Auflage im September 2009.</p>
+        <p class="isin">ISIN IE00B4L5Y983 · 99,7 % Aktien</p>
+      </div>
+      <div class="pcard" style="color:#7E1429">
+        <p class="risk">Renditeorientiert · nachhaltig</p>
+        <h3>iShares MSCI World SRI</h3>
+        <p class="pa">12,29 % p. a.</p>
+        <p>Weltweit investieren nach Nachhaltigkeitskriterien, seit Oktober 2017.</p>
+        <p class="isin">ISIN IE00BYX2JD69 · 99,6 % Aktien</p>
+      </div>
+      <div class="pcard" style="color:#6C6C6C">
+        <p class="risk">Renditeorientiert · schwankungsarm</p>
+        <h3>iShares Edge MSCI World Min Vol</h3>
+        <p class="pa">8,38 % p. a.</p>
+        <p>Weltaktien mit gedämpften Ausschlägen, seit November 2012.</p>
+        <p class="isin">ISIN IE00B8FHGS14 · 99,5 % Aktien</p>
+      </div>
+    </div>
+
+    <p class="mini rv" style="max-width:80ch">Netto-Wertentwicklung seit Auflagedatum nach Angaben der
+      jeweiligen Fondsgesellschaft, Stand 10.07.2026. Historische Wertentwicklungen lassen keine
+      Rückschlüsse auf die künftige Entwicklung zu. Daneben stehen weitere aktiv gemanagte Fonds
+      der DWS, das Basis-Investment im Sicherungsvermögen von Swiss Life sowie über 200 Einzelfonds
+      zur Wahl.</p>
+
+  </div>
+</section>
+
+<!-- ══════════════════ FLEXIBILITÄT ══════════════════ -->
+<section class="band" id="flexibel">
+  <div class="wrap stack gap-l">
+
+    <div class="stack gap-s rv" style="max-width:62ch">
+      <p class="eyebrow">Was der Vertrag mitmacht</p>
+      <h2>Verbindlich heißt nicht starr.</h2>
+    </div>
+
+    <div class="grid g3 rv">
+      <div class="card feat">
+        <h3>Beiträge anpassen</h3>
+        <p>Senken, erhöhen oder ganz aussetzen — je nachdem, wie das Jahr läuft.
+          Laufender Beitrag ab 300 € im Jahr.</p>
+      </div>
+      <div class="card feat">
+        <h3>Zuzahlen, wenn es passt</h3>
+        <p>Ab 200 € jederzeit zusätzlich einzahlen, bis zum Höchstbetrag auch das
+          wieder voll absetzbar. Bei den Tarifen 712 und 713 sogar nach Rentenbeginn.</p>
+      </div>
+      <div class="card feat">
+        <h3>Rentenbeginn verschieben</h3>
+        <p>Vorziehen bis zum 62. Geburtstag oder aufschieben bis zum 85. Lebensjahr.
+          Wer später beginnt, bekommt mehr.</p>
+      </div>
+      <div class="card feat">
+        <h3>Nicht pfändbar</h3>
+        <p>Das Vertragsguthaben ist in der Ansparphase vor dem Zugriff Dritter geschützt —
+          gerade für Selbständige ein handfestes Argument.</p>
+      </div>
+      <div class="card feat">
+        <h3>Gewinne sichern</h3>
+        <p>Die automatische Gewinnsicherung nimmt erreichte Gewinne schrittweise vom Tisch
+          und erhöht damit die garantierte Rente. Das Ablaufmanagement schichtet zum Ende hin um.</p>
+      </div>
+      <div class="card feat">
+        <h3>Hinterbliebene absichern</h3>
+        <p>Vor Rentenbeginn wird das Vertragsguthaben an berechtigte Hinterbliebene verrentet,
+          danach greift die Rentengarantiezeit. Optional mit Berufsunfähigkeitsschutz
+          und Beitragsbefreiung.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════ ABLAUF ══════════════════ -->
+<section class="band band--w" id="ablauf">
+  <div class="wrap stack gap-l">
+    <div class="stack gap-s rv" style="max-width:62ch">
+      <p class="eyebrow">So geht es weiter</p>
+      <h2>Vier Schritte bis zum Vertrag.</h2>
+    </div>
+    <div class="steps rv">
+      <div class="step"><h3>Steuerlichen Spielraum klären</h3>
+        <p>Wie viel vom Höchstbetrag ist bei Ihnen noch frei? Bei Selbständigen meist alles,
+          bei Angestellten der Teil, den die gesetzliche Rentenversicherung nicht schon belegt.</p></div>
+      <div class="step"><h3>Beitrag und Rentenbeginn festlegen</h3>
+        <p>Monatlich, jährlich oder als Einmalbeitrag ab 5.000 € — und mit oder ohne Dynamik.</p></div>
+      <div class="step"><h3>Anlage und Garantieniveau wählen</h3>
+        <p>Zwischen 0 und 80 % der Beitragssumme garantiert, der Rest in Strategien oder
+          Einzelfonds Ihrer Wahl.</p></div>
+      <div class="step"><h3>Antrag stellen</h3>
+        <p>Wir begleiten Sie durch die Unterlagen und melden den Vertrag jährlich
+          automatisch ans Finanzamt.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ ANTRAG ══════════════════ -->
+<section class="band band--ink" id="antrag">
+  <div class="wrap stack gap-m center">
+    <h2>Rechnen Sie nach.<br>Dann entscheiden Sie.</h2>
+    <p class="lede" style="text-align:center">Ab 300 € im Jahr, jederzeit anpassbar —
+      und mit jedem Beitrag ein Stück Steuer zurück.</p>
+    <div class="btn-row" style="justify-content:center">
+      <a class="btn btn--red" href="https://evapro.swisslife.de/pos/pos" target="_blank" rel="noopener">Zum Antrag</a>
+      <a class="btn btn--line" href="#steuer" style="color:#FFF;border-color:rgba(255,255,255,.34)">Noch einmal rechnen</a>
+    </div>
+    <p class="mini" style="color:#A9A2A0">Swiss Life ist seit 1866 am Markt — einer der ältesten
+      Lebensversicherer Europas.</p>
+  </div>
+</section>
+
+<!-- ══════════════════ DRUCKDOKUMENT ══════════════════ -->
+<div id="print" aria-hidden="true"></div>
+
+<!-- ══════════════════ FUSS ══════════════════ -->
+<footer>
+  <div class="wrap stack gap-l">
+    <div class="cols">
+      <div class="stack gap-s">
+        <h3>Vermittlung</h3>
+        <p>CEB Bankshop AG<br>Stallbaumstraße 11<br>04155 Leipzig</p>
+      </div>
+      <div class="stack gap-s">
+        <h3>Versicherer</h3>
+        <p>Swiss Life Lebensversicherung SE<br>Zeppelinstraße 1<br>85748 Garching b. München</p>
+      </div>
+      <div class="stack gap-s">
+        <h3>Produkt</h3>
+        <p>Swiss Life Maximo Basisrente<br>Fondsgebundene Rentenversicherung<br>Eintrittsalter 15 bis 65 Jahre</p>
+      </div>
+      <div class="stack gap-s">
+        <h3>Unterlagen</h3>
+        <ul>
+          <li>Produktinformationsblatt und Steckbrief</li>
+          <li>Allgemeine Bedingungen Maximo Basisrente</li>
+          <li>Wertentwicklung zentrales Investment</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="disclaimer">Diese Seite dient der Information und ist weder eine Steuer- oder
+      Anlageberatung noch ein Angebot zum Abschluss eines Vertrags. Alle Ergebnisse sind
+      unverbindliche Modellrechnungen auf Basis der von Ihnen eingegebenen Annahmen; maßgeblich
+      sind ausschließlich die vertraglich vereinbarten Leistungen und die Versicherungsbedingungen
+      in ihrer jeweils gültigen Fassung. <b>Steuerliche Grundlagen.</b> Gerechnet wird mit dem
+      Einkommensteuertarif 2026 nach § 32a EStG (Grundfreibetrag 12.348 €), dem
+      Solidaritätszuschlag mit Freigrenze 20.350 € beziehungsweise 40.700 € Einkommensteuer
+      und der gewählten Kirchensteuer. Der Höchstbetrag für Altersvorsorgeaufwendungen beträgt
+      2026 30.826 € für Alleinstehende und 61.652 € bei Zusammenveranlagung; Beiträge zur
+      gesetzlichen Rentenversicherung werden darauf angerechnet. Einkommen, Tarif und
+      Höchstbetrag werden über die gesamte Laufzeit unverändert fortgeschrieben — tatsächlich
+      steigen Höchstbetrag und Tarifeckwerte in aller Regel, was das Ergebnis eher verbessert.
+      Der steuerpflichtige Anteil der Rente richtet sich nach dem Rentenbeginnjahr: 84 % bei
+      Beginn im Jahr 2026, danach jährlich 0,5 Prozentpunkte mehr bis 100 % ab 2058. Der daraus
+      ermittelte steuerfreie Betrag wird aus der ersten vollen Jahresrente errechnet und bleibt
+      lebenslang als fester Eurobetrag bestehen; spätere Rentenerhöhungen sind voll steuerpflichtig.
+      Kranken- und Pflegeversicherungsbeiträge auf die Rente sind nur berücksichtigt, wenn Sie
+      dies im Rechner auswählen. <b>Vertragskosten.</b> Angesetzt sind Abschluss- und
+      Vertriebskosten von 2,5 % der Beitragssumme, verteilt auf die ersten fünf Jahre,
+      Verwaltungskosten von 5 % der laufenden Beiträge sowie 0,45 % p. a. auf das Vertragsguthaben.
+      Die Kosten der Fonds sind in der angenommenen Wertentwicklung nicht abgezogen. Diese Werte
+      sind Rechenannahmen für die Modellrechnung; die für Ihren Vertrag geltenden Kosten entnehmen
+      Sie dem persönlichen Angebot und dem Produktinformationsblatt. <b>Verrentung.</b> Gerechnet
+      wird mit dem garantierten Rentenfaktor, den der Rechner aus Ihrer Aufschubdauer ableitet.
+      Stützstellen sind veröffentlichte Swiss-Life-Angaben für Rentenbeginn 67: 30,74 € bei 12 Jahren
+      Aufschub (Produktinformationsblatt 006536, Stand 01.10.2025), 23,41 € bei 25 Jahren und 22,41 €
+      bei 35 Jahren (Angebote Investo Aktiv, Tarif 772, Januar 2026) sowie 19,18 € bei 43 Jahren.
+      Zwischen diesen Punkten wird linear interpoliert; ein abweichendes Rentenbeginnalter wirkt mit
+      angenommenen 4 % je Jahr. Maßgeblich ist allein der im Versicherungsschein ausgewiesene
+      Rentenfaktor. Beim fondsgebundenen Rentenbezug startet die Rente in gleicher Höhe und
+      steigt jährlich um den Betrag, den die Anlage über den rechnungsmäßigen Zins von 1,0 %
+      hinaus erwirtschaftet; sie kann bei ungünstiger Entwicklung auch sinken. Überschüsse und
+      Zusatzbausteine sind nicht eingerechnet. Einen darüber hinausgehenden „aktuellen" Rentenfaktor
+      weist Swiss Life für dieses Produkt nicht aus — höhere Renten ergeben sich aus Wertentwicklung
+      und Überschussbeteiligung, nicht aus einem zweiten Faktor. <b>Wertentwicklung.</b> Historische
+      Wertentwicklungen sind kein verlässlicher Indikator für die künftige Entwicklung;
+      fondsgebundene Anlagen unterliegen Kurs-, Zins- und Währungsschwankungen und können auch
+      an Wert verlieren. Stand: August 2026.</p>
+  </div>
+</footer>
+<script>
+(function () {
+'use strict';
+
+/* ═══════════════ 1. RECHENGRUNDLAGEN 2026 ═══════════════
+   Alle steuerlichen und produktseitigen Annahmen stehen hier an einer Stelle
+   und lassen sich für ein konkretes Angebot anpassen.                        */
+
+var JAHR       = 2026;
+var HB_BASIS   = 30826;    /* Höchstbetrag Altersvorsorgeaufwendungen, ledig  */
+var SOLI_FG    = 20350;    /* Freigrenze Solidaritätszuschlag, Einkommensteuer */
+var GRV_SATZ   = 0.186;    /* Beitragssatz gesetzliche Rentenversicherung      */
+var GRV_BBG    = 101400;   /* Beitragsbemessungsgrenze allgemeine RV           */
+var BA_START   = 0.84;     /* Besteuerungsanteil bei Rentenbeginn 2026         */
+var BA_STEP    = 0.005;    /* je Jahr späterem Rentenbeginn                    */
+
+/* Garantierter Rentenfaktor in € Monatsrente je 10.000 € Vertragsguthaben.
+   Er hängt an der Aufschubdauer: je länger die Garantie im Voraus zugesagt
+   wird, desto vorsichtiger kalkuliert der Versicherer. Stützstellen aus
+   veröffentlichten Swiss-Life-Unterlagen, alle mit Rentenbeginn 67:
+     12 Jahre  30,74  Produktinformationsblatt 006536, Stand 01.10.2025 (Maximo)
+     25 Jahre  23,41  Angebot 01/2026, Investo Aktiv Tarif 772
+     35 Jahre  22,41  Angebot 01/2026, Investo Aktiv Tarif 772
+     43 Jahre  19,18  finanzmathematisches Gutachten 08/2024 (Maximo)
+   Für ein konkretes Angebot einfach die Paare ersetzen.                    */
+var RF_STUETZ  = [[12, 30.74], [25, 23.41], [35, 22.41], [43, 19.18]];
+var RF_RB_BASIS = 67;      /* Rentenbeginnalter, für das die Stützstellen gelten */
+var RF_RB_STEIG = 0.04;    /* Rechenannahme: je Jahr späterem Rentenbeginn        */
+var RF_MIN = 14, RF_MAX = 40;
+var RECHNUNGSZINS = 0.01;  /* rechnungsmäßiger Zins im Rentenbezug             */
+var K_ABSCHLUSS  = 0.025;  /* Abschlusskosten, Anteil der Beitragssumme        */
+var K_ABS_JAHRE  = 5;      /* verteilt auf so viele Jahre                      */
+var K_VERWALT    = 0.05;   /* Verwaltungskosten, Anteil der laufenden Beiträge */
+var K_GUTHABEN   = 0.0045; /* Kosten auf das Vertragsguthaben, p. a.           */
+var KV_SATZ      = 0.211;  /* KV 17,5 % + PV 3,6 % für freiwillig Versicherte  */
+var INFL         = 0.02;   /* Inflation für die Kaufkraftlinie                 */
+var REN_JAHRE    = 25;     /* betrachtete Länge des Rentenbezugs               */
+
+var nf0 = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 });
+
+/* Rentenfaktor zur Aufschubdauer, stückweise linear zwischen den Stützstellen;
+   außerhalb wird die Steigung des Randsegments fortgesetzt und begrenzt.
+   Ein vom Rentenbeginn 67 abweichendes Alter wirkt zusätzlich über die
+   kürzere oder längere Rentenbezugsdauer.                                  */
+function rentenfaktor(jahre, rbAlter) {
+  var S = RF_STUETZ, n = S.length - 1, i, m, v;
+  if (jahre <= S[0][0]) {
+    m = (S[1][1] - S[0][1]) / (S[1][0] - S[0][0]);
+    v = S[0][1] + (jahre - S[0][0]) * m;
+  } else if (jahre >= S[n][0]) {
+    m = (S[n][1] - S[n - 1][1]) / (S[n][0] - S[n - 1][0]);
+    v = S[n][1] + (jahre - S[n][0]) * m;
+  } else {
+    for (i = 0; i < n; i++) {
+      if (jahre <= S[i + 1][0]) {
+        var t = (jahre - S[i][0]) / (S[i + 1][0] - S[i][0]);
+        v = S[i][1] + t * (S[i + 1][1] - S[i][1]);
+        break;
+      }
+    }
+  }
+  v = v * Math.pow(1 + RF_RB_STEIG, (rbAlter || RF_RB_BASIS) - RF_RB_BASIS);
+  return Math.max(RF_MIN, Math.min(RF_MAX, v));
+}
+
+/* ═══════════════ 2. STEUER ═══════════════ */
+
+/* Einkommensteuer 2026, Grundtarif nach § 32a EStG */
+function estG(x) {
+  x = Math.floor(Math.max(0, x));
+  if (x <= 12348) return 0;
+  if (x <= 17799) { var y = (x - 12348) / 10000; return Math.floor((914.51 * y + 1400) * y); }
+  if (x <= 69878) { var z = (x - 17799) / 10000; return Math.floor((173.10 * z + 2397) * z + 1034.87); }
+  if (x <= 277825) return Math.floor(0.42 * x - 11135.63);
+  return Math.floor(0.45 * x - 19470.38);
+}
+function est(zve, split) { return split ? 2 * estG(Math.max(0, zve) / 2) : estG(Math.max(0, zve)); }
+function soli(e, split) {
+  var fg = split ? 2 * SOLI_FG : SOLI_FG;
+  if (e <= fg) return 0;
+  return Math.min(0.119 * (e - fg), 0.055 * e);
+}
+/* Gesamte Abgabe aus Einkommensteuer, Soli und Kirchensteuer */
+function abgabe(zve, o) {
+  var e = est(zve, o.split);
+  return e + soli(e, o.split) + e * o.kist;
+}
+/* Indexfaktor: Grundfreibetrag, Tarifeckwerte und Höchstbetrag steigen jedes Jahr */
+function tf(o, n) { return Math.pow(1 + (o.tarif || 0), Math.max(0, n)); }
+/* Abgabe im Jahr n, gerechnet mit dem bis dahin angepassten Tarif */
+function abgabeN(zve, o, n) {
+  var f = tf(o, n);
+  return abgabe(zve / f, o) * f;
+}
+/* Grenzbelastung am oberen Rand des Einkommens */
+function grenzsatz(zve, o) {
+  var d = 100;
+  return (abgabe(zve + d, o) - abgabe(zve, o)) / d;
+}
+/* Wie viel vom Höchstbetrag ist noch frei? */
+function spielraum(o, n) {
+  var f = tf(o, n || 0);
+  var hb = (o.split ? 2 * HB_BASIS : HB_BASIS) * f;
+  var grv = (o.status === 'ang' ? Math.min(Math.max(0, o.brutto), GRV_BBG) * GRV_SATZ : 0) * f;
+  return { hb: hb, grv: grv, frei: Math.max(0, hb - grv) };
+}
+/* Erstattung für einen Jahresbeitrag im Jahr n (0 = heute).
+   Einkommen und Tarif werden gemeinsam fortgeschrieben, der reale Steuersatz
+   bleibt damit gleich; nur der Beitrag ist ein nominaler Betrag.            */
+function erstattung(jahresbeitrag, o, n) {
+  n = n || 0;
+  var f = tf(o, n);
+  var sp = spielraum(o, n);
+  var abz = Math.min(jahresbeitrag, sp.frei);
+  var zve = o.zve * f;
+  var voll = abgabeN(zve, o, n);
+  var mit = abgabeN(zve - abz, o, n);
+  return { erst: Math.max(0, voll - mit), abz: abz, gekappt: Math.max(0, jahresbeitrag - abz), sp: sp };
+}
+
+/* ═══════════════ 3. ANSPARPHASE ═══════════════ */
+
+function anspar(o) {
+  var jahre = Math.max(1, Math.round(o.jahre));
+  var rM = Math.pow(1 + o.rend, 1 / 12) - 1;
+  var kM = Math.pow(1 - K_GUTHABEN, 1 / 12) - 1;
+  var bsumme = o.beitragM * 12 * jahre;             /* ohne Dynamik */
+  var absK = bsumme * K_ABSCHLUSS;
+  var absMon = Math.min(jahre, K_ABS_JAHRE) * 12;
+  var absRate = absMon > 0 ? absK / absMon : 0;
+
+  var v = 0, ein = 0, erstGes = 0, gekapptGes = 0, kostenGes = 0;
+  var beitrag = o.beitragM, j, m, netto, erst1 = 0;
+  var pts = [{ j: 0, wert: 0, ein: 0, netto: 0 }];
+
+  for (j = 1; j <= jahre; j++) {
+    var jb = beitrag * 12;
+    var e = erstattung(jb, o, j - 1);
+    erstGes += e.erst;
+    gekapptGes += e.gekappt;
+    if (j === 1) erst1 = e.erst;
+    for (m = 0; m < 12; m++) {
+      netto = beitrag * (1 - K_VERWALT) - (j <= K_ABS_JAHRE ? absRate : 0);
+      kostenGes += beitrag - netto;
+      v = v + netto;
+      if (v < 0) v = 0;
+      v = v * (1 + rM) * (1 + kM);
+      ein += beitrag;
+    }
+    pts.push({ j: j, wert: v, ein: ein, netto: ein - erstGes, erst: e.erst, beitragJ: jb });
+    beitrag = beitrag * (1 + o.dyn);
+  }
+
+  return {
+    wert: v, ein: ein, erst: erstGes, nettoEin: ein - erstGes, pts: pts,
+    absK: absK, gekappt: gekapptGes, kosten: kostenGes, jahre: jahre, erst1: erst1,
+    beitragLetzt: beitrag / (1 + o.dyn)
+  };
+}
+
+/* ═══════════════ 4. RENTENPHASE ═══════════════ */
+
+function besteuerungsanteil(rbJahr) {
+  return Math.min(1, BA_START + BA_STEP * (rbJahr - JAHR));
+}
+
+/* Ein Rentenverlauf über REN_JAHRE Jahre, brutto und netto */
+function rentenLauf(kapital, o, mitSteig) {
+  var ba = besteuerungsanteil(o.rbJahr);
+  var rf = rentenfaktor(o.jahre, o.rbAlter);
+  var jr0 = kapital / 10000 * rf * 12;
+  var fb = (1 - ba) * jr0;                       /* fester Rentenfreibetrag in Euro */
+  var steig = mitSteig ? (1 + o.rendR) / (1 + RECHNUNGSZINS) - 1 : 0;
+  var reihe = [], t, n, f, jr, kv, stpfl, steuer, nt, sonstN, basis, sumB = 0, sumN = 0;
+
+  for (t = 1; t <= REN_JAHRE; t++) {
+    n = o.jahre + t - 1;             /* Jahre ab heute */
+    f = tf(o, n);
+    sonstN = o.sonst * f;            /* Eingabe steht in heutigem Geld */
+    basis = abgabeN(sonstN, o, n);
+    jr = jr0 * Math.pow(1 + steig, t - 1);
+    kv = o.kvOn ? jr * KV_SATZ : 0;
+    stpfl = Math.max(0, jr - fb);
+    steuer = Math.max(0, abgabeN(sonstN + stpfl - kv, o, n) - basis);
+    nt = jr - steuer - kv;
+    sumB += jr; sumN += nt;
+    reihe.push({ j: t, brutto: jr, netto: nt, steuer: steuer, kv: kv, real: jr / f, realNetto: nt / f });
+  }
+  return { ba: ba, fb: fb, jr0: jr0, rf: rf, steig: steig, reihe: reihe, sumB: sumB, sumN: sumN };
+}
+
+/* Flache Kopie mit Änderungen */
+function mit(o, patch) { var x = {}, k; for (k in o) x[k] = o[k]; for (k in patch) x[k] = patch[k]; return x; }
+
+/* Wie viele Monate Rente, bis das netto Eingezahlte wieder da ist? */
+function breakEven(reihe, ziel) {
+  var kum = 0, t, m, mn;
+  for (t = 0; t < reihe.length; t++) {
+    mn = reihe[t].netto / 12;
+    for (m = 1; m <= 12; m++) {
+      kum += mn;
+      if (kum >= ziel) return t * 12 + m;
+    }
+  }
+  return null;
+}
+function kumReihe(reihe) {
+  var out = [{ j: 0, kum: 0 }], kum = 0, t;
+  for (t = 0; t < reihe.length; t++) { kum += reihe[t].netto; out.push({ j: t + 1, kum: kum }); }
+  return out;
+}
+
+/* ═══════════════ 5. FORMATE ═══════════════ */
+
+function eur(v) { return nf0.format(Math.round(v)) + ' €'; }
+function eurK(v) {
+  var a = Math.abs(v);
+  return a >= 1000000 ? (v / 1000000).toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' Mio. €'
+       : a >= 10000 ? Math.round(v / 1000) + ' Tsd. €' : eur(v);
+}
+function pct(v, d) { d = d == null ? 1 : d; return v.toLocaleString('de-DE', { minimumFractionDigits: d, maximumFractionDigits: d }) + ' %'; }
+function monate(n) {
+  if (n == null) return 'mehr als ' + REN_JAHRE + ' Jahren';
+  var j = Math.floor(n / 12), m = n % 12;
+  if (j === 0) return m + (m === 1 ? ' Monat' : ' Monaten');
+  if (m === 0) return j + (j === 1 ? ' Jahr' : ' Jahren');
+  return j + (j === 1 ? ' Jahr' : ' Jahren') + ' und ' + m + (m === 1 ? ' Monat' : ' Monaten');
+}
+function monateN(n) {
+  if (n == null) return 'mehr als ' + REN_JAHRE + ' Jahre';
+  var j = Math.floor(n / 12), m = n % 12;
+  if (j === 0) return m + (m === 1 ? ' Monat' : ' Monate');
+  if (m === 0) return j + (j === 1 ? ' Jahr' : ' Jahre');
+  return j + (j === 1 ? ' Jahr' : ' Jahre') + ' und ' + m + (m === 1 ? ' Monat' : ' Monate');
+}
+/* Lebensalter, in dem der Break-even erreicht ist */
+function beAlter(rbAlter, mon) { return mon == null ? null : Math.floor(rbAlter + mon / 12); }
+function esc(t) { return String(t || '').replace(/[<>&]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]; }); }
+
+/* ═══════════════ 6. ZEICHEN-HELFER ═══════════════ */
+
+var C = { grid: 'rgba(44,44,44,.09)', tick: '#96908D', grey: '#96908D',
+          ink: '#2C2C2C', red: '#A11C36', green: '#2E6B47', gold: '#9A7B29' };
+var FONT = '500 11.5px "IBM Plex Sans", system-ui, sans-serif';
+var FONTB = '600 12px "IBM Plex Sans", system-ui, sans-serif';
+
+function prep(cv, hCss) {
+  var w = cv.clientWidth || cv.parentNode.clientWidth || 600;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.style.height = hCss + 'px';
+  cv.width = Math.round(w * dpr); cv.height = Math.round(hCss * dpr);
+  var ctx = cv.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, hCss);
+  return { ctx: ctx, w: w, h: hCss };
+}
+function line(ctx, pts, col, w, dash) {
+  if (!pts.length) return;
+  ctx.save(); ctx.beginPath();
+  ctx.strokeStyle = col; ctx.lineWidth = w || 2; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  if (dash) ctx.setLineDash(dash);
+  pts.forEach(function (p, i) { i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); });
+  ctx.stroke(); ctx.restore();
+}
+function area(ctx, pts, base, c0, c1, top) {
+  if (!pts.length) return;
+  ctx.save(); ctx.beginPath(); ctx.moveTo(pts[0][0], base);
+  pts.forEach(function (q) { ctx.lineTo(q[0], q[1]); });
+  ctx.lineTo(pts[pts.length - 1][0], base); ctx.closePath();
+  var g = ctx.createLinearGradient(0, top, 0, base);
+  g.addColorStop(0, c0); g.addColorStop(1, c1);
+  ctx.fillStyle = g; ctx.fill(); ctx.restore();
+}
+function band(ctx, oben, unten, farbe) {
+  if (!oben.length) return;
+  var i;
+  ctx.save(); ctx.beginPath();
+  ctx.moveTo(oben[0][0], oben[0][1]);
+  for (i = 1; i < oben.length; i++) ctx.lineTo(oben[i][0], oben[i][1]);
+  for (i = unten.length - 1; i >= 0; i--) ctx.lineTo(unten[i][0], unten[i][1]);
+  ctx.closePath(); ctx.fillStyle = farbe; ctx.fill(); ctx.restore();
+}
+function label(ctx, txt, x, y, col, align, font) {
+  ctx.save(); ctx.fillStyle = col; ctx.font = font || FONT;
+  ctx.textAlign = align || 'left'; ctx.textBaseline = 'middle';
+  ctx.fillText(txt, x, y); ctx.restore();
+}
+function dot(ctx, x, y, col, r) {
+  ctx.save();
+  ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(x, y, (r || 4) + 2, 0, 6.3); ctx.fill();
+  ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, y, r || 4, 0, 6.3); ctx.fill();
+  ctx.restore();
+}
+function achse(maxV, want) {
+  if (!(maxV > 0)) return { step: 1, top: 1, ticks: 1 };
+  var raw = maxV / want, e = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / e, step;
+  step = (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * e;
+  var top = Math.ceil(maxV / step) * step;
+  return { step: step, top: top, ticks: Math.round(top / step) };
+}
+function jahresSchritt(span, pxWidth) {
+  var maxLabels = Math.max(2, Math.floor(pxWidth / 54));
+  var cand = [1, 2, 5, 10, 20, 25];
+  for (var i = 0; i < cand.length; i++) if (span / cand[i] <= maxLabels) return cand[i];
+  return 50;
+}
+
+/* ═══════════════ 7. CHARTS ═══════════════ */
+
+function drawAnspar(a) {
+  var cv = document.getElementById('chartAnspar');
+  if (!cv || !cv.clientWidth) return;
+  var hh = Math.max(240, Math.min(340, cv.clientWidth * 0.46));
+  var p = prep(cv, hh), ctx = p.ctx, w = p.w, h = p.h;
+  var L = 74, R = 46, T = 26, B = 28, i;
+  var pts = a.pts, yrs = a.jahre, raw = 0;
+  pts.forEach(function (q) { raw = Math.max(raw, q.wert, q.ein); });
+  var av = achse(raw * 1.08, 4), maxV = av.top;
+
+  function X(j) { return L + j / Math.max(1, yrs) * (w - L - R); }
+  function Y(v) { return T + (1 - v / maxV) * (h - T - B); }
+
+  for (i = 0; i <= av.ticks; i++) {
+    var gl = Y(av.step * i);
+    line(ctx, [[L, gl], [w - R, gl]], C.grid, 1);
+    label(ctx, nf0.format(av.step * i), L - 8, gl, C.tick, 'right');
+  }
+  label(ctx, 'Euro', 2, 13, C.tick, 'left');
+  var st = jahresSchritt(yrs, w - L - R), lastJ = 0;
+  for (i = 0; i <= yrs; i += st) { label(ctx, 'Jahr ' + i, X(i), h - 12, C.tick, 'center'); lastJ = i; }
+  if (lastJ !== yrs && (yrs - lastJ) >= st * 0.55) label(ctx, 'Jahr ' + yrs, X(yrs), h - 12, C.tick, 'center');
+
+  var wPts = pts.map(function (q) { return [X(q.j), Y(q.wert)]; });
+  var ePts = pts.map(function (q) { return [X(q.j), Y(q.ein)]; });
+  var nPts = pts.map(function (q) { return [X(q.j), Y(q.netto)]; });
+
+  area(ctx, wPts, h - B, 'rgba(161,28,54,.26)', 'rgba(161,28,54,0)', T);
+  band(ctx, ePts, nPts, 'rgba(46,107,71,.22)');
+  line(ctx, ePts, C.grey, 1.8, [5, 4]);
+  line(ctx, nPts, C.green, 2.2);
+  line(ctx, wPts, C.red, 2.8);
+  dot(ctx, wPts[wPts.length - 1][0], wPts[wPts.length - 1][1], C.red, 4.5);
+
+}
+
+function drawBreak(r) {
+  var cv = document.getElementById('chartBreak');
+  if (!cv || !cv.clientWidth) return;
+  var hh = Math.max(240, Math.min(340, cv.clientWidth * 0.46));
+  var p = prep(cv, hh), ctx = p.ctx, w = p.w, h = p.h;
+  var L = 74, R = 46, T = 26, B = 28, i;
+
+  var yrs = r.zeige;
+  var kf = r.kumF.slice(0, yrs + 1), kk = r.kumK.slice(0, yrs + 1);
+  var raw = Math.max(r.nettoEin, kf[kf.length - 1].kum, kk[kk.length - 1].kum);
+  var av = achse(raw * 1.08, 4), maxV = av.top;
+
+  function X(j) { return L + j / Math.max(1, yrs) * (w - L - R); }
+  function Y(v) { return T + (1 - v / maxV) * (h - T - B); }
+
+  for (i = 0; i <= av.ticks; i++) {
+    var gl = Y(av.step * i);
+    line(ctx, [[L, gl], [w - R, gl]], C.grid, 1);
+    label(ctx, nf0.format(av.step * i), L - 8, gl, C.tick, 'right');
+  }
+  label(ctx, 'Euro', 2, 13, C.tick, 'left');
+  var st = jahresSchritt(yrs, w - L - R);
+  for (i = 0; i <= yrs; i += st) label(ctx, 'mit ' + (r.rbAlter + i), X(i), h - 12, C.tick, 'center');
+  label(ctx, 'Alter', 2, h - 12, C.tick, 'left');
+
+  var fPts = kf.map(function (q) { return [X(q.j), Y(q.kum)]; });
+  var kPts = kk.map(function (q) { return [X(q.j), Y(q.kum)]; });
+  var zy = Y(r.nettoEin);
+
+  area(ctx, fPts, h - B, 'rgba(161,28,54,.18)', 'rgba(161,28,54,0)', T);
+  line(ctx, [[L, zy], [w - R, zy]], C.green, 2, [6, 4]);
+  label(ctx, 'netto eingezahlt ' + eurK(r.nettoEin), L + 6, zy - 12, C.green, 'left', FONTB);
+  line(ctx, kPts, C.grey, 2.2, [5, 4]);
+  line(ctx, fPts, C.red, 2.8);
+
+  [[r.monF, C.red, 'fondsgebunden'], [r.monK, C.grey, 'klassisch']].forEach(function (m) {
+    if (m[0] == null) return;
+    var xx = X(m[0] / 12);
+    line(ctx, [[xx, zy], [xx, h - B]], m[1] === C.red ? 'rgba(161,28,54,.45)' : 'rgba(150,144,141,.5)', 1.4, [3, 4]);
+    dot(ctx, xx, zy, m[1], 4.5);
+  });
+  if (r.monF != null) label(ctx, 'mit ' + beAlter(r.rbAlter, r.monF) + ' Jahren alles zurück',
+    X(r.monF / 12) + 7, T + 6, C.red, 'left', FONTB);
+}
+
+function drawRente(r) {
+  var cv = document.getElementById('chartRente');
+  if (!cv || !cv.clientWidth) return;
+  var hh = Math.max(230, Math.min(320, cv.clientWidth * 0.40));
+  var p = prep(cv, hh), ctx = p.ctx, w = p.w, h = p.h;
+  var L = 68, R = 46, T = 26, B = 28, i;
+  var yrs = REN_JAHRE;
+  var raw = 0;
+  r.fonds.reihe.forEach(function (q) { raw = Math.max(raw, q.brutto / 12); });
+  var av = achse(raw * 1.08, 4), maxV = av.top;
+
+  function X(j) { return L + j / yrs * (w - L - R); }
+  function Y(v) { return T + (1 - v / maxV) * (h - T - B); }
+
+  for (i = 0; i <= av.ticks; i++) {
+    var gl = Y(av.step * i);
+    line(ctx, [[L, gl], [w - R, gl]], C.grid, 1);
+    label(ctx, nf0.format(av.step * i), L - 8, gl, C.tick, 'right');
+  }
+  label(ctx, '€ / Monat', 2, 13, C.tick, 'left');
+  var st = jahresSchritt(yrs, w - L - R);
+  for (i = 1; i <= yrs; i += st) label(ctx, 'mit ' + (r.rbAlter + i - 1), X(i), h - 12, C.tick, 'center');
+  label(ctx, 'Alter', 2, h - 12, C.tick, 'left');
+
+  var fPts = r.fonds.reihe.map(function (q) { return [X(q.j), Y(q.brutto / 12)]; });
+  var kPts = r.klass.reihe.map(function (q) { return [X(q.j), Y(q.brutto / 12)]; });
+  var iPts = r.klass.reihe.map(function (q) { return [X(q.j), Y(q.brutto / 12 / Math.pow(1 + (r.infl || 0), q.j - 1))]; });
+
+  band(ctx, fPts, kPts, 'rgba(161,28,54,.16)');
+  line(ctx, iPts, C.gold, 1.8, [4, 4]);
+  line(ctx, kPts, C.grey, 2.2);
+  line(ctx, fPts, C.red, 2.8);
+  dot(ctx, fPts[fPts.length - 1][0], fPts[fPts.length - 1][1], C.red, 4.5);
+  label(ctx, eur(r.fonds.reihe[r.fonds.reihe.length - 1].brutto / 12),
+    fPts[fPts.length - 1][0] - 6, fPts[fPts.length - 1][1] - 14, C.red, 'right', FONTB);
+}
+
+/* ═══════════════ 7b. AUFKLAPPBARE TABELLEN ═══════════════ */
+
+/* Eine Tabelle wird nur aufgebaut, wenn ihr Aufklapper offen ist —
+   sonst kostet jeder Reglerzug unnötig Rechenzeit. */
+function offen(id) {
+  var el = document.getElementById(id);
+  if (!el || !el.closest) return true;
+  var det = el.closest('details');
+  return !det || det.open;
+}
+function setzeTab(id, bauen) {
+  if (offen(id)) document.getElementById(id).innerHTML = bauen();
+}
+
+function th(sp) { return '<thead><tr>' + sp.map(function (x) { return '<th>' + x + '</th>'; }).join('') + '</tr></thead>'; }
+
+/* Ansparphase Schritt für Schritt: Beitrag, absetzbarer Rahmen, Steuersatz darauf,
+   Erstattung einzeln und kumuliert, Netto-Aufwand und Kapitalaufbau. */
+function tabAnspar(o, a) {
+  var rows = '', i, q, erstKum = 0, erstVor = 0, erstJ, sp, abz, satz;
+  for (i = 1; i < a.pts.length; i++) {
+    q = a.pts[i];
+    erstKum = q.ein - q.netto;
+    erstJ = erstKum - erstVor;
+    erstVor = erstKum;
+    sp = spielraum(o, i - 1);
+    abz = Math.min(q.beitragJ, sp.frei);
+    satz = abz > 0 ? erstJ / abz : 0;
+    rows += '<tr' + (i === a.pts.length - 1 ? ' class="grenze"' : '') + '>'
+      + '<td>' + (JAHR + i - 1) + '</td>'
+      + '<td>' + (o.alter + i - 1) + '</td>'
+      + '<td>' + eur(q.beitragJ) + '</td>'
+      + '<td' + (abz < q.beitragJ ? ' class="neg"' : ' class="dim"') + '>' + eur(abz) + '</td>'
+      + '<td>' + pct(satz * 100) + '</td>'
+      + '<td class="pos">' + eur(erstJ) + '</td>'
+      + '<td class="pos">' + eur(erstKum) + '</td>'
+      + '<td>' + eur(q.beitragJ - erstJ) + '</td>'
+      + '<td>' + eur(q.wert) + '</td></tr>';
+  }
+  var fuss = '<tfoot><tr><td>Summe</td><td class="dim">' + a.jahre + ' Jahre</td><td>'
+    + eur(a.ein) + '</td><td class="dim">—</td><td class="dim">—</td><td class="pos">'
+    + eur(a.erst) + '</td><td class="pos">' + eur(a.erst) + '</td><td>' + eur(a.nettoEin)
+    + '</td><td>' + eur(a.wert) + '</td></tr></tfoot>';
+  return th(['Jahr', 'Alter', 'Beitrag', 'absetzbar', 'Steuersatz darauf', 'Erstattung',
+             'gespart gesamt', 'Netto-Aufwand', 'Guthaben'])
+    + '<tbody>' + rows + '</tbody>' + fuss;
+}
+
+/* Steuertarif: wie Grundfreibetrag und Höchstbetrag mitwachsen */
+function tabTarif(o) {
+  var rows = '', n, f, gfb, sp, alter, letzte = o.jahre + REN_JAHRE - 1;
+  var faktor = o.split ? 2 : 1;
+  for (n = 0; n <= letzte; n++) {
+    f = tf(o, n);
+    gfb = 12348 * faktor * f;
+    sp = spielraum(o, n);
+    alter = o.alter + n;
+    rows += '<tr' + (n === o.jahre ? ' class="grenze"' : '') + '>'
+      + '<td>' + (JAHR + n) + '</td>'
+      + '<td>' + alter + '</td>'
+      + '<td>' + eur(gfb) + '</td>'
+      + '<td>' + eur(sp.hb) + '</td>'
+      + '<td>' + (n < o.jahre ? 'Ansparphase' : n === o.jahre ? 'Rentenbeginn' : 'Rente') + '</td></tr>';
+  }
+  return th(['Jahr', 'Alter', 'Grundfreibetrag', 'Höchstbetrag Basisrente', 'Phase'])
+    + '<tbody>' + rows + '</tbody>';
+}
+
+/* Rentenphase: was brutto kommt, was abgeht, was bleibt */
+function tabRente(o, f, ziel) {
+  var rows = '', i, r, kum = 0, treffer = f.mon != null ? Math.ceil(f.mon / 12) : -1;
+  for (i = 0; i < f.reihe.length; i++) {
+    r = f.reihe[i];
+    kum += r.netto;
+    rows += '<tr' + (i + 1 === treffer ? ' class="grenze"' : '') + '>'
+      + '<td>' + (o.rbAlter + i) + '</td>'
+      + '<td>' + (o.rbJahr + i) + '</td>'
+      + '<td>' + eur(r.brutto / 12) + '</td>'
+      + '<td>' + eur(r.steuer / 12) + '</td>'
+      + (o.kvOn ? '<td>' + eur(r.kv / 12) + '</td>' : '')
+      + '<td class="pos">' + eur(r.netto / 12) + '</td>'
+      + '<td>' + eur(kum) + '</td></tr>';
+  }
+  var kopf = ['Alter', 'Jahr', 'Rente brutto', 'Steuer'];
+  if (o.kvOn) kopf.push('KV/PV');
+  kopf.push('Rente netto', 'netto kumuliert');
+  return th(kopf) + '<tbody>' + rows + '</tbody>';
+}
+
+/* Rentenbezug im Vergleich: die eine Rente wächst, die andere verliert an Wert.
+   Die Kaufkraftspalten sind auf den Rentenbeginn bezogen, nicht auf heute —
+   verglichen wird, was sich während des Rentenbezugs auseinanderentwickelt. */
+function tabSchere(o, f, k) {
+  var rows = '', i, nf, nk, real, rf, rk, kum = 0, g = o.tarif || 0;
+  for (i = 0; i < f.reihe.length; i++) {
+    nf = f.reihe[i].brutto / 12;
+    nk = k.reihe[i].brutto / 12;
+    real = Math.pow(1 + g, i);
+    rf = nf / real;
+    rk = nk / real;
+    kum += (f.reihe[i].brutto - k.reihe[i].brutto);
+    rows += '<tr>'
+      + '<td>' + (o.rbAlter + i) + '</td>'
+      + '<td class="dim">' + (o.rbJahr + i) + '</td>'
+      + '<td class="pos">' + eur(nf) + '</td>'
+      + '<td>' + eur(nk) + '</td>'
+      + '<td class="pos">' + (nf - nk >= 1 ? '+ ' + eur(nf - nk) : '—') + '</td>'
+      + '<td class="pos">' + eur(rf) + '</td>'
+      + '<td class="neg">' + eur(rk) + '</td>'
+      + '<td class="pos">' + eur(kum) + '</td></tr>';
+  }
+  var n = f.reihe.length - 1;
+  var fuss = '<tfoot><tr><td>Summe</td><td class="dim">' + f.reihe.length + ' Jahre</td>'
+    + '<td class="pos">' + eur(f.sumB) + '</td><td>' + eur(k.sumB) + '</td>'
+    + '<td class="pos">+ ' + eur(f.sumB - k.sumB) + '</td>'
+    + '<td class="pos">zuletzt ' + eur(f.reihe[n].brutto / 12 / Math.pow(1 + g, n)) + '</td>'
+    + '<td class="neg">zuletzt ' + eur(k.reihe[n].brutto / 12 / Math.pow(1 + g, n)) + '</td>'
+    + '<td class="pos">' + eur(f.sumB - k.sumB) + '</td></tr></tfoot>';
+  return th(['Alter', 'Jahr', 'Fondsgebunden', 'Klassisch', 'Unterschied',
+             'Fondsgeb. real', 'Klassisch real', 'Mehr kumuliert'])
+    + '<tbody>' + rows + '</tbody>' + fuss;
+}
+
+/* ═══════════════ 8. OBERFLÄCHE ═══════════════ */
+
+function $(id) { return document.getElementById(id); }
+
+var status_ = 'selb', dyn = 0, kist = 9, letzte = null;
+
+function eingaben() {
+  var alter = +$('fAlter').value;
+  var rbAlter = Math.max(alter + 1, +$('fRb').value);
+  var jahre = Math.max(1, rbAlter - alter);
+  return {
+    beitragM: Math.max(0, +$('fBeitrag').value || 0),
+    alter: alter, rbAlter: rbAlter, jahre: jahre, rbJahr: JAHR + jahre,
+    rend: (+$('fRend').value || 0) / 100,
+    dyn: dyn / 100,
+    status: status_,
+    zve: Math.max(0, +$('fZve').value || 0),
+    brutto: Math.max(0, +$('fBrutto').value || 0),
+    split: $('fSplit').checked,
+    kist: kist / 100,
+    sonst: Math.max(0, +$('bSonst').value || 0),
+    rendR: (+$('bRend').value || 0) / 100,
+    tarif: (+$('bTarif').value || 0) / 100,
+    kvOn: $('bKv').checked
+  };
+}
+
+function render() {
+  var o = eingaben();
+
+  $('fAlterVal').textContent = o.alter + ' Jahre';
+  $('fRbVal').textContent = o.rbAlter + ' Jahren';
+  $('fRendVal').textContent = pct(o.rend * 100);
+  $('bRendVal').textContent = pct(o.rendR * 100);
+  $('bTarifVal').textContent = pct(o.tarif * 100);
+  $('fLaufzeit').textContent = o.jahre + ' Jahre Ansparzeit, Rentenbeginn im Jahr ' + o.rbJahr
+    + (o.jahre < 5 ? ' — die Aufschubdauer beträgt mindestens fünf Jahre.' : '.');
+  $('fBruttoWrap').hidden = o.status !== 'ang';
+
+  var a = anspar(o);
+  var sp = spielraum(o);
+  var gs = grenzsatz(o.zve, o);
+  var jb1 = o.beitragM * 12;
+  var e1 = erstattung(jb1, o);
+  var nettoM = o.beitragM - e1.erst / 12;
+
+  /* --- Steuerteil --- */
+  $('stGrenz').textContent = 'Grenzsteuersatz ' + pct(gs * 100);
+  $('stGrenzSatz').textContent = pct(gs * 100);
+  $('stNetto').textContent = eur(nettoM);
+  $('stNettoNote').textContent = o.beitragM > 0
+    ? 'Von Ihren ' + eur(o.beitragM) + ' im Monat trägt das Finanzamt ' + eur(e1.erst / 12)
+      + ' — das sind ' + pct(e1.erst / jb1 * 100, 0) + ' Ihres Beitrags.'
+    : 'Tragen Sie oben einen Beitrag ein.';
+  $('stJahr1').textContent = eur(e1.erst);
+  $('stGesamt').textContent = eur(a.erst);
+  $('stKapital').textContent = eur(a.wert);
+
+  var warn = $('stWarn');
+  if (o.jahre < 5) {
+    warn.hidden = false;
+    warn.textContent = 'Die Aufschubdauer beträgt bei der Basisrente mindestens fünf Jahre. '
+      + 'Bitte Alter oder Rentenbeginn anpassen.';
+  } else if (a.gekappt > 0) {
+    warn.hidden = false;
+    warn.textContent = 'Ihr Beitrag übersteigt den absetzbaren Spielraum. Frei sind bei Ihnen '
+      + eur(sp.frei) + ' im Jahr'
+      + (sp.grv > 0 ? ' — vom Höchstbetrag von ' + eur(sp.hb) + ' sind ' + eur(sp.grv)
+          + ' bereits durch Ihre gesetzliche Rentenversicherung belegt' : '')
+      + '. Über die Laufzeit bleiben ' + eur(a.gekappt) + ' ohne Steuerwirkung.';
+  } else {
+    warn.hidden = false;
+    warn.className = 'hint ok';
+    warn.textContent = 'Ihr Beitrag liegt vollständig im absetzbaren Rahmen. Frei sind bei Ihnen '
+      + eur(sp.frei) + ' im Jahr'
+      + (sp.grv > 0 ? ' — der Höchstbetrag von ' + eur(sp.hb) + ' abzüglich ' + eur(sp.grv)
+          + ' für Ihre gesetzliche Rentenversicherung' : ' — der volle Höchstbetrag')
+      + (sp.frei - jb1 >= 12
+          ? '. Bis dahin ist noch Luft für ' + eur((sp.frei - jb1) / 12) + ' mehr im Monat.'
+          : '. Damit schöpfen Sie ihn praktisch vollständig aus.');
+  }
+  if (a.gekappt > 0 || o.jahre < 5) warn.className = 'hint warn';
+
+  $('stBoonSum').textContent = eur(a.erst);
+  $('stBoon').innerHTML =
+      vz('Erstattung im ersten Jahr', 'Bei einem Grenzsteuersatz von ' + pct(gs * 100)
+         + ', gerechnet mit Solidaritätszuschlag' + (kist ? ' und ' + kist + ' % Kirchensteuer' : ''), e1.erst)
+    + vz('Erstattung über ' + a.jahre + ' Jahre', 'Bei unverändertem Einkommen und Tarif — '
+         + 'steigen Höchstbetrag und Eckwerte, wird es mehr', a.erst)
+    + vz('Aus eigener Tasche', 'Von ' + eur(a.ein) + ' Beiträgen bleiben nach Erstattung bei Ihnen', -a.nettoEin);
+
+  $('legVorteil').textContent = eur(a.erst);
+  setzeTab('tabAnspar', function () { return tabAnspar(o, a); });
+  $('tabAnsparFuss').textContent = '„Absetzbar" ist der Teil des Jahresbeitrags, der als '
+    + 'Sonderausgabe angesetzt werden kann — der Höchstbetrag abzüglich dessen, was die '
+    + 'gesetzliche Rentenversicherung schon belegt, fortgeschrieben mit ' + pct(o.tarif * 100)
+    + ' im Jahr; rot heißt, der Beitrag liegt darüber. „Steuersatz darauf" ist der Satz, mit dem '
+    + 'genau dieser Betrag entlastet wird — er liegt unter Ihrem Grenzsteuersatz von '
+    + pct(gs * 100) + ', weil der Abzug über mehrere Tarifstufen hinweg wirkt. Die Erstattung ist '
+    + 'im Jahr der Beitragszahlung angesetzt; tatsächlich fließt sie mit der Steuererklärung im '
+    + 'Folgejahr. Das Guthaben ist nach allen Vertragskosten gerechnet.';
+
+  $('stFoot').textContent = 'Gerechnet mit ' + pct(o.rend * 100) + ' Wertentwicklung p. a. vor Vertragskosten. '
+    + 'Angesetzt sind ' + pct(K_ABSCHLUSS * 100) + ' Abschlusskosten der Beitragssumme (' + eur(a.absK)
+    + ', verteilt auf fünf Jahre), ' + pct(K_VERWALT * 100, 0) + ' Verwaltungskosten der Beiträge und '
+    + pct(K_GUTHABEN * 100, 2) + ' p. a. auf das Guthaben. Fondskosten sind in der Renditeannahme enthalten. '
+    + 'Einkommen, Tarif und Höchstbetrag steigen mit ' + pct(o.tarif * 100)
+    + ' im Jahr — der Höchstbetrag liegt im letzten Beitragsjahr damit bei '
+    + eur(spielraum(o, a.jahre - 1).hb) + '.';
+
+  /* --- Rentenphase --- */
+  var fonds = rentenLauf(a.wert, o, true);
+  var klass = rentenLauf(a.wert, o, false);
+  var monF = breakEven(fonds.reihe, a.nettoEin);
+  var monK = breakEven(klass.reihe, a.nettoEin);
+  var kumF = kumReihe(fonds.reihe), kumK = kumReihe(klass.reihe);
+  var zeige = Math.min(REN_JAHRE, Math.max(6, Math.ceil((monK != null ? monK : REN_JAHRE * 12) / 12) + 4));
+
+  var altF = beAlter(o.rbAlter, monF), altK = beAlter(o.rbAlter, monK);
+
+  $('beJahrLbl').textContent = 'Rentenbeginn ' + o.rbJahr + ' mit ' + o.rbAlter
+    + ' · Rentenfaktor ' + fonds.rf.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  $('beHero').textContent = altF != null ? altF + ' Jahren' : 'über ' + (o.rbAlter + REN_JAHRE);
+  $('beDauer').textContent = monF != null ? monateN(monF) : 'über ' + REN_JAHRE + ' Jahre';
+
+  if (a.nettoEin <= 0) {
+    $('beHero').textContent = '—';
+    $('beDauer').textContent = '—';
+    $('beHeroNote').textContent = 'Tragen Sie im Abschnitt darüber einen Beitrag ein, dann steht hier, '
+      + 'in welchem Alter Sie Ihre Netto-Einzahlungen wieder heraus haben.';
+  } else if (monF == null) {
+    $('beHeroNote').textContent = 'Mit diesen Annahmen ist der Punkt bis zum Alter von '
+      + (o.rbAlter + REN_JAHRE) + ' noch nicht erreicht. Ein früherer Rentenbeginn, ein längerer '
+      + 'Ansparzeitraum oder eine höhere Wertentwicklung verschieben ihn nach vorn.';
+  } else if (monK == null) {
+    $('beHeroNote').textContent = 'Sie gehen mit ' + o.rbAlter + ' in Rente und haben mit ' + altF
+      + ' alles zurück — nach ' + monate(monF) + ' Rentenbezug. Alles danach ist Überschuss. '
+      + 'Bei klassischer Verrentung wäre der Punkt bis zum Alter von ' + (o.rbAlter + REN_JAHRE)
+      + ' nicht erreicht.';
+  } else if (altK > altF) {
+    $('beHeroNote').textContent = 'Sie gehen mit ' + o.rbAlter + ' in Rente und haben mit ' + altF
+      + ' alles zurück — nach ' + monate(monF) + ' Rentenbezug. Bei klassischer Verrentung wäre es '
+      + 'erst mit ' + altK + '. Alles danach ist Überschuss, lebenslang.';
+  } else {
+    $('beHeroNote').textContent = 'Sie gehen mit ' + o.rbAlter + ' in Rente und haben mit ' + altF
+      + ' alles zurück — nach ' + monate(monF) + ' Rentenbezug. Alles danach ist Überschuss, lebenslang.';
+  }
+  var r1 = fonds.reihe[0];
+  var fRb = tf(o, o.jahre);
+  var abzugQuote = r1.brutto > 0 ? (r1.steuer + r1.kv) / r1.brutto : 0;
+
+  $('beRbAlter').textContent = o.rbAlter;
+  $('beNettoEin').textContent = eur(a.nettoEin);
+  $('beRenteBrutto').textContent = eur(fonds.jr0 / 12);
+  $('beRenteNetto').textContent = eur(r1.netto / 12);
+  $('beRenteNote').textContent = 'So viel steht Ihnen ab dem ersten Rentenmonat zur freien Verfügung'
+    + (fonds.steig > 0 ? ' — und die Rente steigt danach Jahr für Jahr weiter.' : '.');
+  $('beRenteNote2').textContent = 'Davon gehen ' + eur((r1.steuer + r1.kv) / 12) + ' im Monat für '
+    + (o.kvOn ? 'Steuern sowie Kranken- und Pflegeversicherung' : 'Steuern') + ' ab, also '
+    + pct(abzugQuote * 100, 1) + ' der Bruttorente.';
+  $('beSteuerSatz').textContent = pct(abzugQuote * 100, 1);
+  $('beFrei').textContent = eur(fonds.fb) + ' / Jahr';
+
+  $('bBaHint').textContent = 'Bei Rentenbeginn im Jahr ' + o.rbJahr + ' sind ' + pct(fonds.ba * 100, 1)
+    + ' der Rente steuerpflichtig; die übrigen ' + pct((1 - fonds.ba) * 100, 1) + ' — bei Ihnen '
+    + eur(fonds.fb) + ' im Jahr — bleiben lebenslang steuerfrei. '
+    + (o.tarif > 0
+        ? 'Bis dahin ist der Grundfreibetrag mit ' + pct(o.tarif * 100) + ' im Jahr auf rund '
+          + eur(12348 * fRb * (o.split ? 2 : 1)) + ' gestiegen — deshalb bleibt von der Rente mehr übrig, '
+          + 'als der eingefrorene Tarif von heute vermuten ließe.'
+        : 'Sie rechnen mit eingefrorenem Tarif — das unterschätzt Ihre Nettorente.');
+  $('beFoot').textContent = 'Verglichen wird das netto Eingezahlte (' + eur(a.ein) + ' Beiträge abzüglich '
+    + eur(a.erst) + ' Erstattung) mit der Rente nach Steuern'
+    + (o.kvOn ? ' sowie Kranken- und Pflegeversicherung' : '')
+    + ' — beides in Euro des jeweiligen Jahres. Übrige Einkünfte im Alter: ' + eur(o.sonst)
+    + ' im Jahr in heutigem Geld, bei Rentenbeginn also ' + eur(o.sonst * fRb)
+    + '. Grundfreibetrag, Tarif und Höchstbetrag steigen mit ' + pct(o.tarif * 100) + ' im Jahr.';
+
+  setzeTab('tabTarif', function () { return tabTarif(o); });
+  $('tabTarifFuss').textContent = 'Grundfreibetrag heute ' + eur(12348 * (o.split ? 2 : 1))
+    + ', Höchstbetrag ' + eur(o.split ? 2 * HB_BASIS : HB_BASIS) + '. Beide steigen im Rechner mit '
+    + pct(o.tarif * 100) + ' im Jahr — dem Wert, den Sie links eingestellt haben. '
+    + 'Bei Rentenbeginn ' + o.rbJahr + ' liegt der Grundfreibetrag damit bei '
+    + eur(12348 * (o.split ? 2 : 1) * tf(o, o.jahre)) + '.';
+  setzeTab('tabRente', function () { return tabRente(o, { reihe: fonds.reihe, mon: monF }, a.nettoEin); });
+  $('tabRenteFuss').textContent = 'Fondsgebundener Rentenbezug bei ' + pct(o.rendR * 100)
+    + ' Wertentwicklung. Die hervorgehobene Zeile ist das Jahr, in dem die kumulierte Nettorente '
+    + 'Ihre netto eingezahlten ' + eur(a.nettoEin) + ' überschreitet.'
+    + (o.kvOn ? '' : ' Kranken- und Pflegeversicherung sind nicht angesetzt.');
+
+  drawAnspar(a);
+  drawBreak({ nettoEin: a.nettoEin, kumF: kumF, kumK: kumK, monF: monF, monK: monK,
+              zeige: zeige, rbAlter: o.rbAlter });
+
+  /* --- Fondsgebundener Rentenbezug --- */
+  var mehr = fonds.sumB - klass.sumB;
+  $('rbDauerLbl').textContent = 'Vom ' + o.rbAlter + '. bis zum ' + (o.rbAlter + REN_JAHRE - 1)
+    + '. Lebensjahr';
+  $('rbHero').textContent = eur(mehr);
+  $('rbHeroNote').textContent = fonds.steig > 0
+    ? 'Bei ' + pct(o.rendR * 100) + ' Wertentwicklung im Rentenbezug steigt Ihre Rente um '
+      + pct(fonds.steig * 100) + ' im Jahr — aus ' + eur(fonds.jr0 / 12) + ' mit ' + o.rbAlter
+      + ' werden mit ' + (o.rbAlter + REN_JAHRE - 1) + ' Jahren '
+      + eur(fonds.reihe[REN_JAHRE - 1].brutto / 12) + ' im Monat.'
+    : 'Ohne Wertentwicklung im Rentenbezug entspricht der fondsgebundene Verlauf der klassischen Verrentung.';
+  $('rbSumF').textContent = eur(fonds.sumB);
+  $('rbSumK').textContent = eur(klass.sumB);
+  var maxSum = Math.max(fonds.sumB, klass.sumB) || 1;
+  $('rbBarF').style.width = (fonds.sumB / maxSum * 100) + '%';
+  $('rbBarK').style.width = (klass.sumB / maxSum * 100) + '%';
+  $('rbTxtF').textContent = 'Mit ' + o.rbAlter + ' sind es ' + eur(fonds.jr0 / 12)
+    + ' im Monat, mit ' + (o.rbAlter + REN_JAHRE - 1) + ' schon '
+    + eur(fonds.reihe[REN_JAHRE - 1].brutto / 12) + '.';
+  $('rbTxtK').textContent = 'Mit ' + o.rbAlter + ' sind es ' + eur(klass.jr0 / 12)
+    + ' im Monat — und mit ' + (o.rbAlter + REN_JAHRE - 1) + ' immer noch dieselben '
+    + eur(klass.jr0 / 12) + ', bei ' + pct(o.tarif * 100) + ' Geldentwertung aber nur noch '
+    + eur(klass.jr0 / 12 / Math.pow(1 + (o.tarif || 0), REN_JAHRE - 1)) + ' wert.';
+  $('rbFoot').textContent = 'Beide Varianten starten mit demselben garantierten Rentenfaktor von '
+    + fonds.rf.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    + ' € je 10.000 € Vertragsguthaben — er richtet sich nach Ihrer Aufschubdauer von '
+    + a.jahre + ' Jahren und dem Rentenbeginn mit ' + o.rbAlter
+    + '. Beim fondsgebundenen Rentenbezug erhöht alles, was die Anlage '
+    + 'über den rechnungsmäßigen Zins von ' + pct(RECHNUNGSZINS * 100) + ' hinaus erwirtschaftet, '
+    + 'die Rente dauerhaft; bei schwacher Entwicklung kann sie auch sinken.';
+
+  setzeTab('tabSchere', function () { return tabSchere(o, fonds, klass); });
+  var gRb = Math.pow(1 + (o.tarif || 0), REN_JAHRE - 1);
+  $('tabSchereFuss').textContent = 'Bruttorenten vor Steuern. Die beiden „real"-Spalten rechnen die '
+    + 'Kaufkraft ab Rentenbeginn zurück, mit ' + pct(o.tarif * 100) + ' Geldentwertung im Jahr — '
+    + 'beide starten deshalb beim selben Betrag. Danach läuft die Schere auseinander: die '
+    + 'fondsgebundene Rente steigt um ' + pct(fonds.steig * 100) + ' im Jahr und gewinnt real dazu, '
+    + 'die klassische bleibt nominal stehen und verliert. Mit ' + (o.rbAlter + REN_JAHRE - 1)
+    + ' hat die klassische Rente noch ' + eur(klass.jr0 / 12 / gRb) + ' Kaufkraft von ursprünglich '
+    + eur(klass.jr0 / 12) + '; die fondsgebundene steht dann real bei '
+    + eur(fonds.reihe[REN_JAHRE - 1].brutto / 12 / gRb) + '.';
+
+  drawRente({ fonds: fonds, klass: klass, rbAlter: o.rbAlter, infl: o.tarif });
+
+  letzte = { o: o, a: a, sp: sp, gs: gs, e1: e1, nettoM: nettoM,
+             fonds: fonds, klass: klass, monF: monF, monK: monK, mehr: mehr };
+}
+
+function vz(titel, unten, wert) {
+  return '<div class="vz"><div><b>' + titel + '</b><p class="mini">' + unten + '</p></div>'
+    + '<span class="vz-w"' + (wert < 0 ? ' style="color:var(--ink-3)"' : '') + '>'
+    + eur(Math.abs(wert)) + '</span></div>';
+}
+
+/* ═══════════════ 9. DRUCKDOKUMENT ═══════════════ */
+
+function pgKopf(titel) {
+  return '<div class="pg-head"><b>Swiss Life Maximo Basisrente</b>'
+    + '<span>' + titel + '<br>Erstellt am ' + new Date().toLocaleDateString('de-DE') + '</span></div>';
+}
+function pgFuss(seite) {
+  return '<div class="pg-foot"><span>Unverbindliche Modellrechnung · CEB Bankshop AG, '
+    + 'Stallbaumstraße 11, 04155 Leipzig · Versicherer: Swiss Life Lebensversicherung SE</span>'
+    + '<span>Seite ' + seite + '</span></div>';
+}
+function kv(a, b) { return '<div><span>' + a + '</span><b>' + b + '</b></div>'; }
+function empfaenger() {
+  var n = esc($('docName').value), be = esc($('docBerater').value);
+  if (n) return '<p class="lead"><b>Für ' + n + '</b>' + (be ? ' · Ihr Ansprechpartner: ' + be : '') + '</p>';
+  if (be) return '<p class="lead">Ihr Ansprechpartner: ' + be + '</p>';
+  return '';
+}
+function bild(id) {
+  var cvs = document.getElementById(id);
+  try { return '<img class="pg-img" src="' + cvs.toDataURL('image/png') + '" alt="">'; }
+  catch (e) { return ''; }
+}
+
+function rechtstext() {
+  return '<b>Keine Zusage.</b> Diese Modellrechnung beruht ausschließlich auf den eingegebenen '
+    + 'Annahmen und ist weder eine Steuer- noch eine Anlageberatung. Maßgeblich sind die vertraglich '
+    + 'vereinbarten Leistungen und die Versicherungsbedingungen in ihrer jeweils gültigen Fassung. '
+    + '<b>Steuer.</b> Gerechnet mit dem Einkommensteuertarif 2026 nach § 32a EStG, Solidaritätszuschlag '
+    + 'mit Freigrenze 20.350 € beziehungsweise 40.700 € Einkommensteuer und der gewählten Kirchensteuer. '
+    + 'Höchstbetrag für Altersvorsorgeaufwendungen 2026: 30.826 € ledig, 61.652 € bei Zusammenveranlagung; '
+    + 'Beiträge zur gesetzlichen Rentenversicherung werden angerechnet. Einkommen, Tarif und Höchstbetrag '
+    + 'sind über die gesamte Laufzeit unverändert fortgeschrieben. Der steuerpflichtige Anteil der Rente '
+    + 'richtet sich nach dem Rentenbeginnjahr (84 % bei Beginn 2026, danach +0,5 Prozentpunkte je Jahr, '
+    + '100 % ab 2058); der steuerfreie Betrag wird aus der ersten vollen Jahresrente errechnet und bleibt '
+    + 'lebenslang ein fester Eurobetrag, spätere Erhöhungen sind voll steuerpflichtig. Die Erstattung ist '
+    + 'im Jahr der Beitragszahlung angesetzt; tatsächlich fließt sie mit der Steuererklärung im Folgejahr. '
+    + '<b>Kosten.</b> Angesetzt sind 2,5 % Abschlusskosten der Beitragssumme über fünf Jahre, 5 % '
+    + 'Verwaltungskosten der laufenden Beiträge und 0,45 % p. a. auf das Vertragsguthaben. Es handelt sich '
+    + 'um Rechenannahmen; die für Ihren Vertrag geltenden Kosten entnehmen Sie dem persönlichen Angebot. '
+    + '<b>Verrentung.</b> Der garantierte Rentenfaktor wird aus der Aufschubdauer abgeleitet; Stützstellen '
+    + 'sind veröffentlichte Swiss-Life-Angaben für Rentenbeginn 67 (12 Jahre 30,74 €; 25 Jahre 23,41 €; '
+    + '35 Jahre 22,41 €; 43 Jahre 19,18 € je 10.000 € Vertragsguthaben), zwischen ihnen wird linear '
+    + 'interpoliert. Ein abweichendes Rentenbeginnalter wirkt mit angenommenen 4 % je Jahr. Für Ihren '
+    + 'Vertrag gilt allein der im Versicherungsschein ausgewiesene Rentenfaktor. Beim fondsgebundenen '
+    + 'Rentenbezug startet die Rente in gleicher Höhe und verändert sich jährlich um das, was die Anlage '
+    + 'über den rechnungsmäßigen Zins von 1,0 % hinaus erwirtschaftet — sie kann auch sinken. Überschüsse '
+    + 'und Zusatzbausteine sind nicht eingerechnet. <b>Wertentwicklung.</b> Historische Wertentwicklungen '
+    + 'sind kein verlässlicher Indikator für die Zukunft; fondsgebundene Anlagen können an Wert verlieren.';
+}
+
+function szenarien(L) {
+  var set = [3, 5, 6, 8], eig = Math.round(L.o.rend * 1000) / 10, i, rows = '';
+  if (set.indexOf(eig) < 0) { set.push(eig); set.sort(function (a, b) { return a - b; }); }
+  rows += '<tr><th>Wertentwicklung</th><th>Kapital bei Rentenbeginn</th><th>Rente zu Beginn</th>'
+    + '<th>Alles zurück mit</th></tr>';
+  for (i = 0; i < set.length; i++) {
+    var x = set[i];
+    var o2 = mit(L.o, { rend: x / 100 });
+    var a2 = anspar(o2);
+    var f2 = rentenLauf(a2.wert, o2, true);
+    var m2 = breakEven(f2.reihe, a2.nettoEin);
+    rows += '<tr' + (Math.abs(x - eig) < 0.05 ? ' class="hi"' : '') + '><td>' + pct(x) + ' p. a.</td><td>'
+      + eur(a2.wert) + '</td><td>' + eur(f2.jr0 / 12) + '</td><td>'
+      + (m2 == null ? 'später' : beAlter(L.o.rbAlter, m2) + ' Jahren') + '</td></tr>';
+  }
+  return '<table class="pg-t">' + rows + '</table>';
+}
+
+function ansparTab(a) {
+  var rows = '<tr><th>Jahr</th><th>Beiträge kumuliert</th><th>Erstattung kumuliert</th>'
+    + '<th>Netto-Aufwand</th><th>Vertragsguthaben</th></tr>';
+  var n = a.pts.length - 1, sk = Math.ceil(n / 20), i, q, erstKum = 0;
+  for (i = 1; i <= n; i++) {
+    q = a.pts[i];
+    erstKum = q.ein - q.netto;
+    if (i !== n && sk > 1 && i % sk !== 0) continue;
+    rows += '<tr' + (i === n ? ' class="hi"' : '') + '><td>Jahr ' + q.j + '</td><td>' + eur(q.ein)
+      + '</td><td>' + eur(erstKum) + '</td><td>' + eur(q.netto) + '</td><td>' + eur(q.wert) + '</td></tr>';
+  }
+  return '<table class="pg-t">' + rows + '</table>'
+    + (sk > 1 ? '<p style="font-size:7.5pt;color:#96908D;margin-top:3px">Aus Platzgründen im '
+        + sk + '-Jahres-Schritt; das letzte Jahr ist immer enthalten.</p>' : '');
+}
+
+function rentenTab(L) {
+  var rows = '<tr><th>Alter</th><th>Monatsrente fondsgebunden</th><th>davon netto</th>'
+    + '<th>Netto kumuliert</th><th>Klassisch netto kumuliert</th></tr>';
+  var kf = 0, kk = 0, i, sk = Math.ceil(REN_JAHRE / 20);
+  for (i = 0; i < REN_JAHRE; i++) {
+    kf += L.fonds.reihe[i].netto; kk += L.klass.reihe[i].netto;
+    var hit = L.monF != null && Math.ceil(L.monF / 12) === i + 1;
+    if (!hit && i !== REN_JAHRE - 1 && sk > 1 && (i + 1) % sk !== 0) continue;
+    rows += '<tr' + (hit ? ' class="hi"' : '') + '><td>mit ' + (L.o.rbAlter + i) + '</td><td>'
+      + eur(L.fonds.reihe[i].brutto / 12) + '</td><td>' + eur(L.fonds.reihe[i].netto / 12) + '</td><td>'
+      + eur(kf) + '</td><td>' + eur(kk) + '</td></tr>';
+  }
+  return '<table class="pg-t">' + rows + '</table>';
+}
+
+function druckeAlles() {
+  var L = letzte;
+  if (!L) return '';
+  var o = L.o, a = L.a;
+
+  var p1 = '<div class="pg">' + pgKopf('Steuervorteil und Break-even')
+    + '<h1>Ihre Basisrente</h1>' + empfaenger()
+    + '<p class="lead">' + eur(o.beitragM) + ' im Monat'
+    + (o.dyn > 0 ? ' mit ' + pct(o.dyn * 100, 0) + ' Dynamik' : '')
+    + ' · ' + a.jahre + ' Jahre bis zum Rentenbeginn mit ' + o.rbAlter
+    + ' · angenommen ' + pct(o.rend * 100) + ' p. a.</p>'
+    + '<div class="pg-hero"><div><div class="lbl">Ihr Beitrag kostet Sie netto nur</div>'
+    + '<div class="val">' + eur(L.nettoM) + ' im Monat</div></div>'
+    + '<div class="sub">Alles zurück mit ' + (beAlter(o.rbAlter, L.monF) || '—') + ' Jahren · '
+    + eur(a.erst) + ' Steuererstattung über die Laufzeit · '
+    + eur(a.wert) + ' Vertragsguthaben bei Rentenbeginn</div></div>'
+    + '<div class="pg-kv">'
+    + kv('Monatlicher Beitrag', eur(o.beitragM) + (o.dyn > 0 ? ' im ersten Jahr' : ''))
+    + kv('Dynamik', o.dyn > 0 ? pct(o.dyn * 100, 0) + ' jährlich' : 'ohne')
+    + kv('Alter heute', o.alter + ' Jahre')
+    + kv('Rentenbeginn', 'mit ' + o.rbAlter + ', im Jahr ' + o.rbJahr)
+    + kv('Beiträge insgesamt', eur(a.ein))
+    + kv('Steuererstattung insgesamt', eur(a.erst))
+    + kv('Netto-Aufwand insgesamt', eur(a.nettoEin))
+    + kv('Zu versteuerndes Einkommen', eur(o.zve) + (o.split ? ' (Zusammenveranlagung)' : ''))
+    + kv('Grenzsteuersatz', pct(L.gs * 100))
+    + kv('Kirchensteuer', kist ? kist + ' %' : 'keine')
+    + kv('Absetzbarer Spielraum', eur(L.sp.frei) + ' im Jahr')
+    + kv('Angenommene Wertentwicklung', pct(o.rend * 100) + ' p. a.')
+    + '</div>'
+    + bild('chartAnspar')
+    + '<div class="pg-boon"><div class="hd"><span>Was das Finanzamt beisteuert</span><span>'
+    + eur(a.erst) + '</span></div>'
+    + '<div class="rw"><span>Erstattung im ersten Jahr bei ' + pct(L.gs * 100) + ' Grenzsteuersatz</span><b>'
+    + eur(L.e1.erst) + '</b></div>'
+    + '<div class="rw"><span>Erstattung über ' + a.jahre + ' Jahre</span><b>' + eur(a.erst) + '</b></div>'
+    + '<div class="rw"><span>Von ' + eur(a.ein) + ' Beiträgen bleiben aus eigener Tasche</span><b>'
+    + eur(a.nettoEin) + '</b></div></div>'
+    + pgFuss(1) + '</div>';
+
+  var p2 = '<div class="pg">' + pgKopf('Steuervorteil und Break-even')
+    + '<h2>In welchem Alter Sie alles zurück haben</h2>'
+    + '<p>Sie gehen mit ' + o.rbAlter + ' in Rente. Mit '
+    + (beAlter(o.rbAlter, L.monF) || '—') + ' Jahren — nach ' + monate(L.monF) + ' Rentenbezug — '
+    + 'haben Sie netto so viel Rente erhalten, wie Sie nach Steuererstattung netto eingezahlt '
+    + 'haben, nämlich ' + eur(a.nettoEin) + '. Bei klassischer Verrentung wäre es '
+    + (L.monK == null ? 'bis zum Alter von ' + (o.rbAlter + REN_JAHRE) + ' nicht so weit'
+                      : 'erst mit ' + beAlter(o.rbAlter, L.monK) + ' Jahren')
+    + '. Alles danach ist Überschuss, lebenslang.</p>'
+    + bild('chartBreak')
+    + '<h2>Rentenphase Jahr für Jahr</h2>'
+    + rentenTab(L)
+    + pgFuss(2) + '</div>';
+
+  var p3 = '<div class="pg">' + pgKopf('Steuervorteil und Break-even')
+    + '<h2>Ansparphase Jahr für Jahr</h2>'
+    + ansparTab(a)
+    + '<h2>Wenn es anders läuft</h2>'
+    + szenarien(L)
+    + pgFuss(3) + '</div>';
+
+  var p4 = '<div class="pg">' + pgKopf('Steuervorteil und Break-even')
+    + '<h2>Fondsgebundener Rentenbezug</h2>'
+    + '<p>Bei den meisten Policen endet die Anlage zum Rentenbeginn. Swiss Life Maximo bietet '
+    + 'stattdessen an, das Guthaben auch während des Rentenbezugs investiert zu lassen. Bei '
+    + pct(o.rendR * 100) + ' Wertentwicklung steigt die Rente dann um ' + pct(L.fonds.steig * 100)
+    + ' im Jahr: aus ' + eur(L.fonds.jr0 / 12) + ' mit ' + o.rbAlter + ' werden mit '
+    + (o.rbAlter + REN_JAHRE - 1) + ' Jahren '
+    + eur(L.fonds.reihe[REN_JAHRE - 1].brutto / 12) + ' im Monat.</p>'
+    + '<div class="pg-kv">'
+    + kv('Garantierter Rentenfaktor', L.fonds.rf.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        + ' € je 10.000 €')
+    + kv('Startrente monatlich mit ' + o.rbAlter, eur(L.fonds.jr0 / 12))
+    + kv('Steuerpflichtiger Anteil', pct(L.fonds.ba * 100, 1))
+    + kv('Steuerfrei lebenslang', eur(L.fonds.fb) + ' im Jahr')
+    + kv('Summe Renten fondsgebunden', eur(L.fonds.sumB) + ' bis Alter ' + (o.rbAlter + REN_JAHRE - 1))
+    + kv('Summe Renten klassisch', eur(L.klass.sumB) + ' bis Alter ' + (o.rbAlter + REN_JAHRE - 1))
+    + kv('Unterschied', eur(L.mehr))
+    + kv('Übrige Einkünfte im Alter', eur(o.sonst) + ' im Jahr')
+    + '</div>'
+    + bild('chartRente')
+    + '<p class="pg-legal">' + rechtstext() + '</p>'
+    + pgFuss(4) + '</div>';
+
+  return p1 + p2 + p3 + p4;
+}
+
+function drucke(html) {
+  var d = $('print');
+  d.innerHTML = html;
+  window.setTimeout(function () { window.print(); }, 60);
+}
+
+/* ═══════════════ 10. BERECHNUNG ALS LINK ═══════════════ */
+
+function zustand() {
+  return ['b' + $('fBeitrag').value, 'a' + $('fAlter').value, 'r' + $('fRb').value,
+          'd' + dyn, 's' + status_, 'z' + $('fZve').value, 'g' + $('fBrutto').value,
+          'v' + ($('fSplit').checked ? 1 : 0), 'k' + kist, 'w' + $('fRend').value,
+          'o' + $('bSonst').value, 'W' + $('bRend').value, 'T' + $('bTarif').value,
+          'K' + ($('bKv').checked ? 1 : 0)].join(',');
+}
+function ladeZustand() {
+  var hs = (location.hash || '').replace(/^#/, '');
+  if (!hs) return false;
+  var map = {};
+  hs.split(',').forEach(function (t) { if (t) map[t.charAt(0)] = t.slice(1); });
+  function set(id, v) { if (v !== undefined && $(id)) $(id).value = v; }
+  set('fBeitrag', map.b); set('fAlter', map.a); set('fRb', map.r);
+  set('fZve', map.z); set('fBrutto', map.g); set('fRend', map.w);
+  set('bSonst', map.o); set('bRend', map.W); set('bTarif', map.T);
+  if (map.d !== undefined) dyn = +map.d;
+  if (map.s) status_ = map.s;
+  if (map.k !== undefined) kist = +map.k;
+  if (map.v !== undefined) $('fSplit').checked = map.v === '1';
+  if (map.K !== undefined) $('bKv').checked = map.K === '1';
+  return true;
+}
+function chipsSetzen() {
+  [].forEach.call(document.querySelectorAll('.chip[data-dyn]'), function (c) {
+    c.setAttribute('aria-pressed', +c.getAttribute('data-dyn') === dyn ? 'true' : 'false');
+  });
+  [].forEach.call(document.querySelectorAll('.chip[data-kist]'), function (c) {
+    c.setAttribute('aria-pressed', +c.getAttribute('data-kist') === kist ? 'true' : 'false');
+  });
+  [].forEach.call(document.querySelectorAll('[data-status]'), function (c) {
+    c.setAttribute('aria-pressed', c.getAttribute('data-status') === status_ ? 'true' : 'false');
+  });
+  $('fStatusHint').textContent = status_ === 'selb'
+    ? 'Ohne gesetzliche Rentenversicherung steht Ihnen der Höchstbetrag in voller Höhe zur Verfügung.'
+    : 'Ihre Beiträge zur gesetzlichen Rentenversicherung werden auf den Höchstbetrag angerechnet — '
+      + 'absetzbar ist nur, was davon noch frei ist.';
+}
+
+/* ═══════════════ 11. VERDRAHTUNG ═══════════════ */
+
+function bind() {
+  ['fBeitrag', 'fAlter', 'fRb', 'fZve', 'fBrutto', 'fRend', 'bSonst', 'bRend', 'bTarif']
+    .forEach(function (id) { $(id).addEventListener('input', render); });
+
+  [].forEach.call(document.querySelectorAll('.chip[data-quote]'), function (c) {
+    c.addEventListener('click', function () {
+      var q = +c.getAttribute('data-quote') / 100;
+      $('bSonst').value = Math.round(Math.max(0, +$('fZve').value || 0) * q / 500) * 500;
+      [].forEach.call(document.querySelectorAll('.chip[data-quote]'), function (x) {
+        x.setAttribute('aria-pressed', x === c ? 'true' : 'false');
+      });
+      render();
+    });
+  });
+  ['fSplit', 'bKv'].forEach(function (id) { $(id).addEventListener('change', render); });
+
+  [].forEach.call(document.querySelectorAll('.chip[data-dyn]'), function (c) {
+    c.addEventListener('click', function () { dyn = +c.getAttribute('data-dyn'); chipsSetzen(); render(); });
+  });
+  [].forEach.call(document.querySelectorAll('.chip[data-kist]'), function (c) {
+    c.addEventListener('click', function () { kist = +c.getAttribute('data-kist'); chipsSetzen(); render(); });
+  });
+  [].forEach.call(document.querySelectorAll('.chip[data-rend]'), function (c) {
+    c.addEventListener('click', function () {
+      $('fRend').value = c.getAttribute('data-rend');
+      [].forEach.call(document.querySelectorAll('.chip[data-rend]'), function (x) {
+        x.setAttribute('aria-pressed', x === c ? 'true' : 'false');
+      });
+      render();
+    });
+  });
+  [].forEach.call(document.querySelectorAll('[data-status]'), function (c) {
+    c.addEventListener('click', function () { status_ = c.getAttribute('data-status'); chipsSetzen(); render(); });
+  });
+
+  $('pdfGo').addEventListener('click', function () { drucke(druckeAlles()); });
+  $('linkGo').addEventListener('click', function () {
+    var url = location.href.split('#')[0] + '#' + zustand();
+    try { location.hash = zustand(); } catch (e) {}
+    var msg = $('linkMsg');
+    function fertig(ok) {
+      msg.textContent = ok
+        ? 'Link kopiert. Er steht auch oben in der Adresszeile — speichern oder verschicken, '
+          + 'und der Rechner öffnet sich genau mit diesen Werten.'
+        : 'Der Link steht jetzt oben in der Adresszeile. Von dort kopieren, speichern oder verschicken.';
+      msg.className = 'hint warn';
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () { fertig(true); }, function () { fertig(false); });
+    } else fertig(false);
+  });
+
+  [].forEach.call(document.querySelectorAll('details.aus'), function (d) {
+    d.addEventListener('toggle', function () { if (d.open) render(); });
+  });
+
+  var t;
+  window.addEventListener('resize', function () {
+    clearTimeout(t);
+    t = setTimeout(render, 160);
+  });
+}
+
+function reveal() {
+  var els = document.querySelectorAll('.rv');
+  if (!('IntersectionObserver' in window)) {
+    [].forEach.call(els, function (e) { e.classList.add('in'); }); return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { rootMargin: '0px 0px -6% 0px', threshold: .05 });
+  [].forEach.call(els, function (e) { io.observe(e); });
+}
+
+function init() {
+  ladeZustand();
+  chipsSetzen();
+  bind();
+  render();
+  reveal();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(render);
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+
+})();
+</script>
+</body>
+</html>
